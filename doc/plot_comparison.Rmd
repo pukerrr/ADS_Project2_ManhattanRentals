@@ -1,0 +1,64 @@
+---
+title: "Plot_comparison"
+author: "Jiayi Cui, jc4884"
+date: "October 5, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(ggplot2)
+median_price <- read.csv('../output/median_price_manhattan.csv')
+travel <- read.csv('../output/travel_count.csv')
+entertainment <- read.csv('../output/entertainment_count.csv')
+count.market <- read.csv('../output/market_count.csv')
+count.hospital <- read.csv('../output/hospital_count.csv')
+count.crime <- read.csv('../output/crime_count.csv')
+count.restaurant <- read.csv('../output/restaurant_count.csv')
+```
+
+```{r}
+year <- rep(2011:2017, each = 12)
+year <- append(year, rep(2018,8), after = length(year))
+month <- rep(1:12, 7)
+month <- append(month, 1:8, after = length(month))
+date <- paste(year, month, sep = '-')
+```
+
+# Type 1 time series data
+```{r}
+# input selected zipcodes
+selected_zip <- c(10025, 10027)
+selected_price <- median_price %>%
+  filter(RegionName %in% selected_zip)
+time_series <- data.frame(date)
+namevector <- as.character(selected_zip)
+value <- subset(selected_price, RegionName %in% selected_zip)[,11:102]
+time_series[,namevector] <- t(value)
+```
+
+# Type 2 time series data
+```{r}
+all_date <- rep(date, length(selected_zip))
+time_series_price <- data.frame(date = all_date)
+value <- subset(selected_price, RegionName %in% selected_zip)[,11:102]
+value <- t(value)
+x <- vector()
+for (i in 1:length(selected_zip)){
+  x <- c(x, value[,i])
+}
+time_series_price[,'median_price'] <- x
+zipgroup <- rep(selected_zip, each = 92)
+time_series_price[,'zipcode'] <- factor(zipgroup)
+```
+
+# Plot using type 2 time series data
+```{r}
+ggplot(time_series_price, aes(x=date, y=median_price, group=zipcode)) +
+  geom_line(aes(color=zipcode))+
+  geom_point(aes(color=zipcode))
+```
+

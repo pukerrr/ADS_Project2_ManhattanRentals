@@ -1,0 +1,188 @@
+---
+title: "Data_Processing_and_Ranking_comparison"
+author: "Jiayi Cui, jc4884"
+date: "October 4, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Load packages and data
+```{r,warning=FALSE,message=FALSE}
+packages.used=c('dplyr', 'geosphere', 'zipcode', 'tigris', 'sp','maptools','broom','httr','rgdal', 'ggmap')
+# check packages that need to be installed.
+packages.needed=setdiff(packages.used, 
+                        intersect(installed.packages()[,1], 
+                                  packages.used))
+# install additional packages
+if(length(packages.needed)>0){
+  install.packages(packages.needed, dependencies = TRUE)
+}
+library(dplyr)
+library(geosphere)
+library(zipcode)
+library(tigris)
+library(sp)
+library(maptools)
+library(broom)
+library(httr)
+library(rgdal)
+```
+```{r}
+rest_raw <- read.csv('../data/DOHMH_New_York_City_Restaurant_Inspection_Results.csv')
+alcohol <- read.csv('../data/Liquor_Authority_Quarterly_List_of_Active_Licenses.csv')
+bus_raw <- read.csv("../data/bus_stop.csv")
+subway_raw <-  read.csv("../data/subwayinfo.csv")
+price_raw <- read.csv('../data/Zip_Zri_AllHomesPlusMultifamily.csv')
+medical_raw <- read.csv('../data/NYC_Health_and_Hospitals_Corporation_Facilities.csv')
+market_raw <- read.csv('../data/Retail_Food_Stores.csv')
+theatre_raw <- read.csv('../data/DOITT_THEATER_01_13SEPT2010.csv')
+crime_raw <- read.csv('../data/NYPD_Complaint_Data_Current_YTD.csv')
+gallery_raw <- read.csv('../data/ART_GALLERY.csv')
+```
+
+# Match crime location with zipcode
+```{r}
+crime_manh <- crime_raw %>%
+  filter(BORO_NM == 'MANHATTAN')
+
+data("zipcode")
+man_zip <- zipcode %>%
+  filter(zip %in% zipcode_man)
+
+# crime location and zipcode distance matrix
+dist_mat <- distm(crime_manh[,c('Longitude','Latitude')], man_zip[,c('longitude','latitude')],
+             fun=distVincentyEllipsoid)
+# match by shortest distance
+crime_manh$zipcode <- man_zip$zip[max.col(-dist_mat)]
+
+write.csv(crime_manh, file = "../output/Crime_manhattan.csv")
+```
+
+
+# Data processing
+```{r}
+rest_manh <- rest_raw %>%
+  distinct(BUILDING, STREET, ZIPCODE,.keep_all = TRUE) %>%
+  filter(BORO == "MANHATTAN") %>%
+  select(DBA, BUILDING, STREET, ZIPCODE, CUISINE.DESCRIPTION)
+
+zipcode_man <- c(seq(10001, 10007), seq(10009, 10014), seq(10016, 10019), seq(10021, 10040), 
+             "10065", "10069", "10075", "10128", "10280", "10282", "11106", "11109", "11231")
+
+alcohol <- alcohol %>%
+  distinct(License.Serial.Number, .keep_all = TRUE) %>%
+  filter(County.Name..Licensee. == "NEW YORK")
+
+bar <- alcohol %>%
+  filter(Zip %in% zipcode_man) %>%
+  filter(License.Type.Name == "ON-PREMISES LIQUOR")
+
+club <- alcohol %>%
+  filter(Zip %in% zipcode_man) %>%
+  filter(License.Type.Name == "CLUB LIQUOR" | License.Type.Name == "CLUB WINE")
+
+bus <- bus_raw %>%
+  filter(zipcode %in% zipcode_man)
+  
+subway <- subway_raw %>%
+  filter(zipcode %in% zipcode_man)
+
+hospital <- medical_raw %>%
+  filter(Postcode %in% zipcode_man)
+
+market <- market_raw %>%
+  filter(Zip.Code %in% zipcode_man)
+
+theatre <- theatre_raw %>%
+  filter(ZIP %in% zipcode_man)
+
+gallery <- gallery_raw %>%
+  filter(ZIP %in% zipcode_man)
+
+price <- price_raw %>%
+  filter(RegionName %in% zipcode_man)
+```
+
+# Count by zipcode
+```{r}
+count.restaurant <- rest_manh %>%
+  group_by(ZIPCODE) %>%
+  summarise(COUNT = n()) %>%
+  mutate(RANKING = rank(desc(COUNT)))
+
+count.bar <- bar %>%
+  group_by(Zip) %>%
+  summarise(COUNT = n()) %>%
+  mutate(RANKING = rank(desc(COUNT)))
+
+count.club <- club %>%
+  group_by(Zip) %>%
+  summarise(COUNT = n()) %>%
+  mutate(RANKING = rank(desc(COUNT)))
+
+count.subway <- subway %>%
+  group_by(zipcode) %>%
+  summarise(COUNT = n()) %>%
+  mutate(RANKING = rank(desc(COUNT)))
+
+count.bus <- bus %>%
+  group_by(zipcode) %>%
+  summarise(COUNT = n()) %>%
+  mutate(RANKING = rank(desc(COUNT)))
+
+count.hospital <- hospital %>%
+  group_by(Postcode) %>%
+  summarise(COUNT = n()) %>%
+  mutate(RANKING = rank(desc(COUNT)))
+
+count.market <- market %>%
+  group_by(Zip.Code) %>%
+  summarise(COUNT = n()) %>%
+  mutate(RANKING = rank(desc(COUNT)))
+
+count.theatre <- theatre %>%
+  group_by(ZIP) %>%
+  summarise(COUNT = n()) %>%
+  mutate(RANKING = rank(desc(COUNT)))
+
+count.gallery <- gallery %>%
+  group_by(ZIP) %>%
+  summarise(COUNT = n()) %>%
+  mutate(RANKING = rank(desc(COUNT)))
+
+count.crime <- crime_manh %>%
+  group_by(zipcode) %>%
+  summarise(COUNT = n()) %>%
+  mutate(RANKING = rank(desc(COUNT)))
+```
+
+# Join features
+```{r}
+travel <- full_join(count.bus, count.subway, by = "zipcode")
+
+names(count.theatre)[names(count.theatre) == 'ZIP'] <- 'Zip'
+names(count.gallery)[names(count.gallery) == 'ZIP'] <- 'Zip'
+count.gallery$Zip <- as.factor(count.gallery$Zip)
+count.theatre$Zip <- as.factor(count.theatre$Zip)
+
+entertainment <- count.bar %>%
+  full_join(count.club, by = 'Zip') %>%
+  full_join(count.gallery, by = 'Zip') %>%
+  full_join(count.theatre, by = 'Zip')
+```
+
+
+# Output processed data
+```{r}
+write.csv(travel, '../output/travel_count.csv')
+write.csv(entertainment, '../output/entertainment_count.csv')
+write.csv(count.crime, '../output/crime_count.csv')
+write.csv(count.market, '../output/market_count.csv')
+write.csv(count.hospital, '../output/hospital_count.csv')
+write.csv(count.restaurant, '../output/restaurant_count.csv')
+write.csv(price, '../output/median_price_manhattan.csv')
+```
+
