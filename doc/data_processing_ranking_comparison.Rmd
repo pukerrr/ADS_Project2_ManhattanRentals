@@ -41,12 +41,26 @@ market_raw <- read.csv('../data/Retail_Food_Stores.csv')
 theatre_raw <- read.csv('../data/DOITT_THEATER_01_13SEPT2010.csv')
 crime_raw <- read.csv('../data/NYPD_Complaint_Data_Current_YTD.csv')
 gallery_raw <- read.csv('../data/ART_GALLERY.csv')
+boro_zip = read.csv("../data/manhattan_zipcode.csv",as.is = T)
+save(boro_zip ,file="../output/boro_zip.Rdata")
+park_raw <- read.csv("../data/OpenData_ParkZones.csv",as.is = T)
+carcrash_raw <- read.csv("../data/NYPD_Motor_Vehicle_Collisions.csv", as.is = T)
+comp311_raw <- read.csv("../data/complaints311_processed.csv", as.is = T)
+all_other_raw <- read.csv("../data/all_other.csv", as.is = T)
 ```
 
 # Match crime location with zipcode
 ```{r}
+zip = paste(boro_zip[,2], collapse = " ")
+zip = gsub(",", "", zip)
+zip.num = as.numeric(strsplit(zip, " ")[[1]])
+
 crime_manh <- crime_raw %>%
   filter(BORO_NM == 'MANHATTAN')
+
+zipcode_man <- c(seq(10001, 10007), seq(10009, 10014), seq(10016, 10019), seq(10021, 10040), 
+             "10065", "10069", "10075", "10128", "10280", "10282", "11106", "11109", "11231")
+
 
 data("zipcode")
 man_zip <- zipcode %>%
@@ -68,9 +82,6 @@ rest_manh <- rest_raw %>%
   distinct(BUILDING, STREET, ZIPCODE,.keep_all = TRUE) %>%
   filter(BORO == "MANHATTAN") %>%
   select(DBA, BUILDING, STREET, ZIPCODE, CUISINE.DESCRIPTION)
-
-zipcode_man <- c(seq(10001, 10007), seq(10009, 10014), seq(10016, 10019), seq(10021, 10040), 
-             "10065", "10069", "10075", "10128", "10280", "10282", "11106", "11109", "11231")
 
 alcohol <- alcohol %>%
   distinct(License.Serial.Number, .keep_all = TRUE) %>%
@@ -104,6 +115,16 @@ gallery <- gallery_raw %>%
 
 price <- price_raw %>%
   filter(RegionName %in% zipcode_man)
+
+park <- park_raw %>%
+  filter(ZIPCODE %in% zipcode_man)
+
+carcrash <- carcrash_raw %>%
+  filter(ZIP.CODE %in% zipcode_man)
+
+complaint <- comp311_raw %>%
+  filter(Incident.Zip %in% zipcode_man)
+complaint = complaint[as.numeric(substr(complaint[,"Created.Date"],7,10))>=2018,]
 ```
 
 # Count by zipcode
@@ -111,53 +132,98 @@ price <- price_raw %>%
 count.restaurant <- rest_manh %>%
   group_by(ZIPCODE) %>%
   summarise(COUNT = n()) %>%
-  mutate(RANKING = rank(desc(COUNT)))
+  mutate(RANKING = rank(desc(COUNT))) %>%
+  mutate(PROB = punif(COUNT, max = max(COUNT), min = 0))
 
 count.bar <- bar %>%
   group_by(Zip) %>%
   summarise(COUNT = n()) %>%
-  mutate(RANKING = rank(desc(COUNT)))
+  mutate(RANKING = rank(desc(COUNT))) %>%
+  mutate(PROB = punif(COUNT, max = max(COUNT), min = 0))
 
 count.club <- club %>%
   group_by(Zip) %>%
   summarise(COUNT = n()) %>%
-  mutate(RANKING = rank(desc(COUNT)))
+  mutate(RANKING = rank(desc(COUNT))) %>%
+  mutate(PROB = punif(COUNT, max = max(COUNT), min = 0))
 
 count.subway <- subway %>%
   group_by(zipcode) %>%
   summarise(COUNT = n()) %>%
-  mutate(RANKING = rank(desc(COUNT)))
+  mutate(RANKING = rank(desc(COUNT))) %>%
+  mutate(PROB = punif(COUNT, max = max(COUNT), min = 0))
 
 count.bus <- bus %>%
   group_by(zipcode) %>%
   summarise(COUNT = n()) %>%
-  mutate(RANKING = rank(desc(COUNT)))
+  mutate(RANKING = rank(desc(COUNT))) %>%
+  mutate(PROB = punif(COUNT, max = max(COUNT), min = 0))
 
 count.hospital <- hospital %>%
   group_by(Postcode) %>%
   summarise(COUNT = n()) %>%
-  mutate(RANKING = rank(desc(COUNT)))
+  mutate(RANKING = rank(desc(COUNT))) %>%
+  mutate(PROB = punif(COUNT, max = max(COUNT), min = 0))
 
 count.market <- market %>%
   group_by(Zip.Code) %>%
   summarise(COUNT = n()) %>%
-  mutate(RANKING = rank(desc(COUNT)))
+  mutate(RANKING = rank(desc(COUNT))) %>%
+  mutate(PROB = punif(COUNT, max = max(COUNT), min = 0))
 
 count.theatre <- theatre %>%
   group_by(ZIP) %>%
   summarise(COUNT = n()) %>%
-  mutate(RANKING = rank(desc(COUNT)))
+  mutate(RANKING = rank(desc(COUNT))) %>%
+  mutate(PROB = punif(COUNT, max = max(COUNT), min = 0))
 
 count.gallery <- gallery %>%
   group_by(ZIP) %>%
   summarise(COUNT = n()) %>%
-  mutate(RANKING = rank(desc(COUNT)))
+  mutate(RANKING = rank(desc(COUNT))) %>%
+  mutate(PROB = punif(COUNT, max = max(COUNT), min = 0))
 
 count.crime <- crime_manh %>%
   group_by(zipcode) %>%
   summarise(COUNT = n()) %>%
-  mutate(RANKING = rank(desc(COUNT)))
+  mutate(RANKING = rank(desc(COUNT))) %>%
+  mutate(PROB = punif(COUNT, max = max(COUNT), min = 0))
+
+count.park <- park %>%
+  group_by(ZIPCODE) %>%
+  summarise(COUNT = n()) %>%
+  mutate(RANKING = rank(desc(COUNT))) %>%
+  mutate(PROB = punif(COUNT, max = max(COUNT), min = 0))
+
+count.carcrash <- carcrash %>%
+  group_by(ZIP.CODE) %>%
+  summarise(COUNT = n()) %>%
+  mutate(RANKING = rank(desc(COUNT))) %>%
+  mutate(PROB = punif(COUNT, max = max(COUNT), min = 0))
+
+count.complaint <- complaint %>%
+  group_by(Incident.Zip) %>%
+  summarise(COUNT = n()) %>%
+  mutate(RANKING = rank(desc(COUNT))) %>%
+  mutate(PROB = punif(COUNT, max = max(COUNT), min = 0))
 ```
+
+# Output individual features
+```{r}
+save(count.restaurant,file="../output/count_restaurant.Rdata")
+save(count.bar,file="../output/count_bar.Rdata")
+save(count.club,file="../output/count_club.Rdata")
+save(count.subway,file="../output/count_subway.Rdata")
+save(count.bus,file="../output/count_bus.Rdata")
+save(count.hospital,file="../output/count_hospital.Rdata")
+save(count.market,file="../output/count_market.Rdata")
+save(count.theatre,file="../output/count_theatre.Rdata")
+save(count.gallery,file="../output/count_gallery.Rdata")
+save(count.crime,file="../output/count_crime.Rdata")
+save(count.park,file="../output/count_park.Rdata")
+save(count.carcrash,file="../output/count_carcrash.Rdata")
+save(count.complaint,file="../output/count_complaint.Rdata")
+```   
 
 # Join features
 ```{r}

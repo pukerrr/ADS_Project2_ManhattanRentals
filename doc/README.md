@@ -2,4 +2,11 @@
 
 ### Doc folder
 
-The doc directory contains the report or presentation files. It can have subfolders.  
+**features.RData** is a dataframe that contains a count and a quantile (based on the counts of the feature) for each area (divided by zip code numbers) of each feature. The following table shows the feature names that are also grouped into one category.
+
+|feature name|category|
+|---|---|---|---|---|
+|bus, subway|travel|
+|gallery, theatre|entertainment|
+
+
