@@ -1,4 +1,4 @@
-zipcode,count.grocery,ranking.grocery,count.pharmacy,ranking.pharmacy,count.American,ranking.American,count.Chinese,ranking.Chinese,count.Italian,ranking.Italian,count.Japenses,ranking.Japenses,count.Pizza,ranking.Pizza
+zipcode,count.grocery,ranking.grocery,count.pharmacy,ranking.pharmacy,count.American,ranking.American,count.Chinese,ranking.Chinese,count.Italian,ranking.Italian,count.Japanese,ranking.Japanese,count.Pizza,ranking.Pizza
 10001,35,12,9,6,102,4,3,32,8,19,10,13,12,4
 10002,70,1,2,30,75,12,62,1,9,17,18,7,14,1
 10003,44,8,13,2,103,3,16,4,24,8,51,1,13,2

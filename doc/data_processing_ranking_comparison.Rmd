@@ -29,6 +29,7 @@ library(maptools)
 library(broom)
 library(httr)
 library(rgdal)
+source("../lib/na_process.R")
 ```
 ```{r}
 rest_raw <- read.csv('../data/DOHMH_New_York_City_Restaurant_Inspection_Results.csv')
@@ -47,6 +48,9 @@ park_raw <- read.csv("../data/OpenData_ParkZones.csv",as.is = T)
 carcrash_raw <- read.csv("../data/NYPD_Motor_Vehicle_Collisions.csv", as.is = T)
 comp311_raw <- read.csv("../data/complaints311_processed.csv", as.is = T)
 all_other_raw <- read.csv("../data/all_other.csv", as.is = T)
+housing_raw0 <- read.csv("../output/new_housing.csv", as.is = T)
+housing_raw0 <- cbind(housing_raw0, X = 1:nrow(housing_raw0))
+housing_raw <- housing_raw0[,c(9,8,1,2,3,4,5,6,7)] %>% arrange(zipcode)
 ```
 
 # Match crime location with zipcode
@@ -60,6 +64,7 @@ crime_manh <- crime_raw %>%
 
 zipcode_man <- c(seq(10001, 10007), seq(10009, 10014), seq(10016, 10019), seq(10021, 10040), 
              "10065", "10069", "10075", "10128", "10280", "10282", "11106", "11109", "11231")
+zip_df <- data.frame(zip_man = zipcode_man)
 
 
 data("zipcode")
@@ -78,9 +83,10 @@ write.csv(crime_manh, file = "../output/Crime_manhattan.csv")
 
 # Data processing
 ```{r}
-rest_manh <- rest_raw %>%
+rest_manh_v <- rest_raw %>%
   distinct(BUILDING, STREET, ZIPCODE,.keep_all = TRUE) %>%
   filter(BORO == "MANHATTAN") %>%
+  filter(ZIPCODE %in% zipcode_man) %>%
   select(DBA, BUILDING, STREET, ZIPCODE, CUISINE.DESCRIPTION)
 
 alcohol <- alcohol %>%
@@ -123,94 +129,200 @@ carcrash <- carcrash_raw %>%
   filter(ZIP.CODE %in% zipcode_man)
 
 complaint <- comp311_raw %>%
-  filter(Incident.Zip %in% zipcode_man)
-complaint = complaint[as.numeric(substr(complaint[,"Created.Date"],7,10))>=2018,]
+  filter(Incident.Zip %in% zipcode_man) %>% filter(as.numeric(substr(Created.Date,7,10)) >= 2018)
+
+housing <- housing_raw %>%
+  filter(zipcode %in% zipcode_man)
 ```
 
-# Count by zipcode
+# Count by zipcode, fill in NAs, rank and calculate probability
+
+The probability is the CDF of a uniform distribution from 0 to the maximum number in count.
+
 ```{r}
-count.restaurant <- rest_manh %>%
+# restaurant violation
+count.restaurant_violation <- rest_manh_v %>%
   group_by(ZIPCODE) %>%
-  summarise(COUNT = n()) %>%
+  summarise(COUNT = n()) %>% 
+  merge(zip_df, by.x = "ZIPCODE", by.y = "zip_man", all.y = T)
+for (i in which(is.na(count.restaurant_violation)[,2])){
+  count.restaurant_violation[i,2] = na_process(count.restaurant_violation, i)
+}
+count.restaurant_violation <- count.restaurant_violation %>%
   mutate(RANKING = rank(desc(COUNT))) %>%
   mutate(PROB = punif(COUNT, max = max(COUNT), min = 0))
+  
+# american style restaurant
+count.rest_american <- all_other_raw[,c("zipcode","count.American")] %>%
+  merge(zip_df, by.x = "zipcode", by.y = "zip_man", all.y = T)
+for (i in which(is.na(count.rest_american)[,2])){
+  count.rest_american[i,2] = na_process(count.rest_american, i)
+}
+count.rest_american <- count.rest_american %>% 
+  mutate(RANKING = rank(desc(count.American))) %>%
+  mutate(PROB = punif(count.American, max = max(count.American), min = 0))
 
+# chinese style restaurant
+count.rest_chinese <- all_other_raw[,c("zipcode","count.Chinese")] %>%
+  merge(zip_df, by.x = "zipcode", by.y = "zip_man", all.y = T)
+for (i in which(is.na(count.rest_chinese)[,2])){
+  count.rest_chinese[i,2] = na_process(count.rest_chinese, i)
+}
+count.rest_chinese <- count.rest_chinese %>% 
+  mutate(RANKING = rank(desc(count.Chinese))) %>%
+  mutate(PROB = punif(count.Chinese, max = max(count.Chinese), min = 0))
+
+# italian style restaurant
+count.rest_italian <- all_other_raw[,c("zipcode","count.Italian")] %>%
+  merge(zip_df, by.x = "zipcode", by.y = "zip_man", all.y = T)
+for (i in which(is.na(count.rest_italian)[,2])){
+  count.rest_italian[i,2] = na_process(count.rest_italian, i)
+}
+count.rest_italian <- count.rest_italian %>% 
+  mutate(RANKING = rank(desc(count.Italian))) %>%
+  mutate(PROB = punif(count.Italian, max = max(count.Italian), min = 0))
+
+# japanese style restaurant
+count.rest_japanese <- all_other_raw[,c("zipcode","count.Japanese")] %>%
+  merge(zip_df, by.x = "zipcode", by.y = "zip_man", all.y = T)
+for (i in which(is.na(count.rest_japanese)[,2])){
+  count.rest_japanese[i,2] = na_process(count.rest_japanese, i)
+}
+count.rest_japanese <- count.rest_japanese %>% 
+  mutate(RANKING = rank(desc(count.Japanese))) %>%
+  mutate(PROB = punif(count.Japanese, max = max(count.Japanese), min = 0))
+
+# pizza restaurant
+count.rest_pizza <- all_other_raw[,c("zipcode","count.Pizza")] %>%
+  merge(zip_df, by.x = "zipcode", by.y = "zip_man", all.y = T)
+for (i in which(is.na(count.rest_pizza)[,2])){
+  count.rest_pizza[i,2] = na_process(count.rest_pizza, i)
+}
+count.rest_pizza <- count.rest_pizza %>% 
+  mutate(RANKING = rank(desc(count.Pizza))) %>%
+  mutate(PROB = punif(count.Pizza, max = max(count.Pizza), min = 0))
+
+# bar
 count.bar <- bar %>%
   group_by(Zip) %>%
   summarise(COUNT = n()) %>%
+  merge(zip_df, by.x = "Zip", by.y = "zip_man", all.y = T)
+for (i in which(is.na(count.bar)[,2])){
+  count.bar[i,2] = na_process(count.bar, i)
+}
+count.bar <- count.bar %>%
   mutate(RANKING = rank(desc(COUNT))) %>%
   mutate(PROB = punif(COUNT, max = max(COUNT), min = 0))
 
+# club
 count.club <- club %>%
   group_by(Zip) %>%
   summarise(COUNT = n()) %>%
+  merge(zip_df, by.x = "Zip", by.y = "zip_man", all.y = T)
+count.club <- new_df(count.club)
+count.club <- count.club %>%
   mutate(RANKING = rank(desc(COUNT))) %>%
   mutate(PROB = punif(COUNT, max = max(COUNT), min = 0))
 
+# subway
 count.subway <- subway %>%
   group_by(zipcode) %>%
   summarise(COUNT = n()) %>%
+  merge(zip_df, by.x = "zipcode", by.y = "zip_man", all.y = T)
+count.subway <- new_df(count.subway) %>%
   mutate(RANKING = rank(desc(COUNT))) %>%
   mutate(PROB = punif(COUNT, max = max(COUNT), min = 0))
 
+# bus
 count.bus <- bus %>%
   group_by(zipcode) %>%
   summarise(COUNT = n()) %>%
+  merge(zip_df, by.x = "zipcode", by.y = "zip_man", all.y = T)
+count.bus <- new_df(count.bus) %>%
   mutate(RANKING = rank(desc(COUNT))) %>%
   mutate(PROB = punif(COUNT, max = max(COUNT), min = 0))
 
+# hospital
 count.hospital <- hospital %>%
   group_by(Postcode) %>%
   summarise(COUNT = n()) %>%
+  merge(zip_df, by.x = "Postcode", by.y = "zip_man", all.y = T) %>%
+  new_df()%>%
   mutate(RANKING = rank(desc(COUNT))) %>%
   mutate(PROB = punif(COUNT, max = max(COUNT), min = 0))
 
+# market
 count.market <- market %>%
   group_by(Zip.Code) %>%
   summarise(COUNT = n()) %>%
+  merge(zip_df, by.x = "Zip.Code", by.y = "zip_man", all.y = T) %>%
+  new_df()%>%
   mutate(RANKING = rank(desc(COUNT))) %>%
   mutate(PROB = punif(COUNT, max = max(COUNT), min = 0))
 
+# theatre
 count.theatre <- theatre %>%
   group_by(ZIP) %>%
   summarise(COUNT = n()) %>%
+  merge(zip_df, by.x = "ZIP", by.y = "zip_man", all.y = T) %>%
+  new_df()%>%
   mutate(RANKING = rank(desc(COUNT))) %>%
   mutate(PROB = punif(COUNT, max = max(COUNT), min = 0))
 
+# gallery
 count.gallery <- gallery %>%
   group_by(ZIP) %>%
   summarise(COUNT = n()) %>%
+  merge(zip_df, by.x = "ZIP", by.y = "zip_man", all.y = T) %>%
+  new_df()%>%
   mutate(RANKING = rank(desc(COUNT))) %>%
   mutate(PROB = punif(COUNT, max = max(COUNT), min = 0))
 
+# crime
 count.crime <- crime_manh %>%
   group_by(zipcode) %>%
   summarise(COUNT = n()) %>%
+  merge(zip_df, by.x = "zipcode", by.y = "zip_man", all.y = T) %>%
+  new_df()%>%
   mutate(RANKING = rank(desc(COUNT))) %>%
   mutate(PROB = punif(COUNT, max = max(COUNT), min = 0))
 
+# park
 count.park <- park %>%
   group_by(ZIPCODE) %>%
   summarise(COUNT = n()) %>%
+  merge(zip_df, by.x = "ZIPCODE", by.y = "zip_man", all.y = T) %>%
+  new_df()%>%
   mutate(RANKING = rank(desc(COUNT))) %>%
   mutate(PROB = punif(COUNT, max = max(COUNT), min = 0))
 
+# car crash
 count.carcrash <- carcrash %>%
   group_by(ZIP.CODE) %>%
   summarise(COUNT = n()) %>%
+  merge(zip_df, by.x = "ZIP.CODE", by.y = "zip_man", all.y = T) %>%
+  new_df()%>%
   mutate(RANKING = rank(desc(COUNT))) %>%
   mutate(PROB = punif(COUNT, max = max(COUNT), min = 0))
 
+# complaint
 count.complaint <- complaint %>%
   group_by(Incident.Zip) %>%
   summarise(COUNT = n()) %>%
+  merge(zip_df, by.x = "Incident.Zip", by.y = "zip_man", all.y = T) %>%
+  new_df()%>%
   mutate(RANKING = rank(desc(COUNT))) %>%
   mutate(PROB = punif(COUNT, max = max(COUNT), min = 0))
 ```
 
 # Output individual features
 ```{r}
-save(count.restaurant,file="../output/count_restaurant.Rdata")
+save(count.restaurant_violation,file="../output/count_restaurant_violation.Rdata")
+save(count.rest_american,file="../output/rest_american.Rdata")
+save(count.rest_chinese,file="../output/rest_chinese.Rdata")
+save(count.rest_italian,file="../output/rest_italian.Rdata")
+save(count.rest_japanese,file="../output/rest_japanese.Rdata")
+save(count.rest_pizza,file="../output/rest_pizza.Rdata")
 save(count.bar,file="../output/count_bar.Rdata")
 save(count.club,file="../output/count_club.Rdata")
 save(count.subway,file="../output/count_subway.Rdata")
@@ -227,17 +339,50 @@ save(count.complaint,file="../output/count_complaint.Rdata")
 
 # Join features
 ```{r}
-travel <- full_join(count.bus, count.subway, by = "zipcode")
+travel <- cbind(count.bus, count.subway[,-1])
+colnames(travel) = c("zip",paste(rep(c("bus", "subway"), each = 3),rep(c("count","rank","prob"),2),sep = "."))
 
-names(count.theatre)[names(count.theatre) == 'ZIP'] <- 'Zip'
-names(count.gallery)[names(count.gallery) == 'ZIP'] <- 'Zip'
-count.gallery$Zip <- as.factor(count.gallery$Zip)
-count.theatre$Zip <- as.factor(count.theatre$Zip)
+entertainment <- cbind(count.theatre, count.gallery[,-1])
+colnames(entertainment) = c("zip",paste(rep(c("theatre", "gallery"), each = 3),rep(c("count","rank","prob"),2),sep = "."))
 
-entertainment <- count.bar %>%
-  full_join(count.club, by = 'Zip') %>%
-  full_join(count.gallery, by = 'Zip') %>%
-  full_join(count.theatre, by = 'Zip')
+restaurant_overall <- cbind(count.rest_american, count.rest_chinese[,-1], count.rest_italian[,-1], count.rest_japanese[,-1], count.rest_pizza[,-1], count.restaurant_violation[,-1])
+colnames(restaurant_overall) = c("zip",paste(rep(c("american", "chinese", "italian", "japanese", "pizza", "violation"), each = 3),rep(c("count","rank","prob"),5),sep = "."))
+
+feature_names = c("restaurant_violation", "rest_american", "rest_chinese", "rest_italian", "rest_japanese", "rest_pizza", "bar","club","subway","bus","hospital","market","theatre","gallery","crime","park","carcrash","complaint")
+feature_all = cbind(as.numeric(zipcode_man), count.restaurant_violation[,-1], count.rest_american[,-1], count.rest_chinese[,-1], count.rest_italian[,-1], count.rest_japanese[,-1], count.rest_pizza[,-1], count.bar[,-1], count.club[,-1], count.subway[,-1], count.bus[,-1], count.hospital[,-1], count.market[,-1], count.theatre[,-1], count.gallery[,-1], count.crime[,-1], count.park[,-1], count.carcrash[,-1], count.complaint[,-1])
+colnames(feature_all) <- c("zipcode", paste(rep(feature_names, each = 3),rep(c("count","rank","prob"),18)))
+
+# combine housing info and features into 1 dataframe
+housing_all <- merge(housing, feature_all, by.x = "zipcode", by.y = "zipcode")
+
+# the zipcode that do not have any houses list:
+zip_none = setdiff(zipcode_man, unique(housing$zipcode))
+
+# save into RData
+save(travel,file="../output/travel.Rdata")
+save(entertainment,file="../output/entertainment.RData")
+save(restaurant_overall,file="../output/restaurant_overall.Rdata")
+save(feature_all,file="../output/feature_all.RData")
+save(housing_all,file="../output/housing_all.RData")
+save(zip_none,file="../output/zip_none.RData")
+
+# names(count.theatre)[names(count.theatre) == 'ZIP'] <- 'Zip'
+# names(count.gallery)[names(count.gallery) == 'ZIP'] <- 'Zip'
+# count.gallery$Zip <- as.factor(count.gallery$Zip)
+# count.theatre$Zip <- as.factor(count.theatre$Zip)
+# 
+# entertainment <- count.bar %>%
+#   full_join(count.club, by = 'Zip') %>%
+#   full_join(count.gallery, by = 'Zip') %>%
+#   full_join(count.theatre, by = 'Zip')
+# count.restaurant_violation$ZIPCODE = as.numeric(count.restaurant_violation$ZIPCODE)
+# restaurant_overall <- count.rest_american %>%
+#   full_join(count.rest_chinese, by = 'zipcode') %>%
+#   full_join(count.rest_italian, by = 'zipcode') %>%
+#   full_join(count.rest_japanese, by = 'zipcode') %>%
+#   full_join(count.rest_pizza, by = 'zipcode') %>%
+#   full_join(count.restaurant_violation, by = c("zipcode"="ZIPCODE"))
+
 ```
 
 
@@ -248,7 +393,7 @@ write.csv(entertainment, '../output/entertainment_count.csv')
 write.csv(count.crime, '../output/crime_count.csv')
 write.csv(count.market, '../output/market_count.csv')
 write.csv(count.hospital, '../output/hospital_count.csv')
-write.csv(count.restaurant, '../output/restaurant_count.csv')
+write.csv(count.restaurant_violation, '../output/restaurant_violation_count.csv')
 write.csv(price, '../output/median_price_manhattan.csv')
 ```
 
