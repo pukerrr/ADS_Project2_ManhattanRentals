@@ -23,12 +23,12 @@ On the Comparison page, users can choose whichever zip code they want, and see h
 
 + **Contribution statement**: ([default](doc/a_note_on_contributions.md)) All team members contributed equally in all stages of this project. All team members approve our work presented in this GitHub repository including this contributions statement.
 
-+ Data Processing: Jiayi Cui, Ruoxi Bai, 
-+ UI&Server Building: (page 1), Kayla Smith(page 2)
-+ CSS Design: Zhirong Li, Yukun Pei, 
-+ Home Page Design: Yukun Pei
-+ Time Series Prediction: Jiayi Cui
-+ Feature Score Calculation: Ruoxi Bai
+	+ Data Processing: Jiayi Cui, Ruoxi Bai, Zhirong Li
+	+ UI&Server Building: Ruoxi Bai, Zhirong Li(page 1), Kayla Smith(page 2)
+	+ CSS Design: Ruoxi Bai, Zhirong Li, Yukun Pei
+	+ Home Page Design: Yukun Pei
+	+ Time Series Prediction: Jiayi Cui
+	+ Feature Score Calculation: Ruoxi Bai
 
 
 Following [suggestions](http://nicercode.github.io/blog/2013-04-05-projects/) by [RICH FITZJOHN](http://nicercode.github.io/about/#Team) (@richfitz). This folder is orgarnized as follows.
