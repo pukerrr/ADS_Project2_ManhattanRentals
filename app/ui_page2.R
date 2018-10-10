@@ -136,26 +136,9 @@ shinyUI(
                                 sliderInput("third_weight", label = "Weight:",
                                             min = 0, max = 1, value = 0.2, step = 0.1)),
                          column(width=2, 
-                                checkboxInput("select_all", label = "Select all features", value = FALSE))),
                          fluidRow(
                          column(6,
                                 dataTableOutput("recom")
-                         ), 
-                         column(3,
-                                leafletOutput("map", width = "220%", height = 650),
-                                
-                                absolutePanel(id="legend",
-                                              fixed = TRUE,
-                                              draggable = TRUE, top = 300, left = "auto", right = 80, bottom = "auto",
-                                              width = 125, height = 215,
-                                              checkboxInput("Crime", label = "Crime",value= FALSE),
-                                              checkboxInput("Bus", label = "Bus",value= FALSE),
-                                              checkboxInput("Subway",label="Subway",value = FALSE),
-                                              checkboxInput("Market", label = "Market",value = FALSE),
-                                              checkboxInput("Restaurant", label = "Restaurant",value= FALSE)                               
-                                              
-                                )
-                               
                          )
                          )
                        )
