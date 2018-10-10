@@ -1,36 +1,35 @@
-# Project 2: Shiny App Development Version 2.0
+# Project 2: Rent by Your Priority Choice
 
-### [Project Description](doc/project2_desc.md)
+![image](doc/overlook.jpg)
 
-![screenshot](doc/screenshot2.png)
+## Rent by Your Priority
+Term: Fall 2018
 
-In this second project of GR5243 Applied Data Science, we develop a version 2.0 of an *Exploratory Data Analysis and Visualization* shiny app on a topic of your choice using [NYC Open Data](https://opendata.cityofnewyork.us/) or U.S. government open data released on the [data.gov](https://data.gov/) website. See [Project 2 Description](doc/project2_desc.md) for more details.  
++ Group 6 #
++ **Rent by Your Priority**: + Team members
+	+ Bai, Ruoxi  rb3313@columbia.edu
+	+ Cui, Jiayi  jc4884@columbia.edu
+	+ Li, Zhirong  zl2628@columbia.edu
+	+ Pei, Yukun  yp2446@columbia.edu
+	+ Smith, Kayla kys2112@columbia.edu
 
-The **learning goals** for this project is:
++ **Project summary**: 
 
-- business intelligence for data science
-- study legacy codes and further development
-- data cleaning
-- data visualization
-- systems development/design life cycle
-- shiny app/shiny server
+This app provides a platform for people to search house rental based on their most care issues. We include safety, transportation, hospital, price, entertainment, restaurant and grocery. Users can pick 3 top prior features and we give recommendation according to the ranked priorities.
 
-*The above general statement about project 2 can be removed once you are finished with your project. It is optional.
+On the Recommendation page, users can not only filter by house type and price range, but also choose 3 top preferences and their weights. The recommendation system will then show the top 20 most suitable houses. Also, the dot map shows where the house is and save the trouble of searching them on Google map.
 
-## Project Title Lorem ipsum dolor sit amet
-Term: Spring 2018
+On the Comparison page, users can choose whichever zip code they want, and see how good this area is in different features among all Manhattan regions by zip code. Our App also provides a price trend plot which not only shows the historical price, but also the predicted price trend in the next 12 months. This page allows you to compare the housing among the whole Manhattan and the price over time at the same time.
 
-+ Team #
-+ **Projec title**: + Team members
-	+ team member 1
-	+ team member 2
-	+ team member 3
-	+ team member 4
-	+ team member 5
++ **Contribution statement**: ([default](doc/a_note_on_contributions.md)) All team members contributed equally in all stages of this project. All team members approve our work presented in this GitHub repository including this contributions statement.
 
-+ **Project summary**: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Data Processing: Jiayi Cui, Ruoxi Bai, 
+UI&Server Building: (page 1), Kayla Smith(page 2)
+CSS Design: Zhirong Li, Yukun Pei, 
+Home Page Design: Yukun Pei
+Time Series Prediction: Jiayi Cui
+Feature Score Calculation: Ruoxi Bai
 
-+ **Contribution statement**: ([default](doc/a_note_on_contributions.md)) All team members contributed equally in all stages of this project. All team members approve our work presented in this GitHub repository including this contributions statement. 
 
 Following [suggestions](http://nicercode.github.io/blog/2013-04-05-projects/) by [RICH FITZJOHN](http://nicercode.github.io/about/#Team) (@richfitz). This folder is orgarnized as follows.
 
