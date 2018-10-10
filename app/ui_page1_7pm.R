@@ -17,10 +17,10 @@ shinyUI(
                             style = "font-family: 'Arial';
                             color: #fff; text-align: center;
                             background-image: url('texturebg2.png');
-                            padding: 20px"),
+                            padding: 10px"),
                          h3("I want my apartment to be:",style = "font-family: 'Arial';
                             color: #2D3D50; text-align: left;
-                            padding: 20px"),
+                            padding: 5px"),
                          fluidRow(
                            column(width=2,
                                   #style = "margin-top: 25px;display:inline-block;margin-right: 0px;margin-left: 120px",
@@ -62,10 +62,10 @@ shinyUI(
                            #        actionButton("button2",label="Reset" 
                            #                     ))
                            ),
-                         fluidRow(titlePanel("      ")),
+              
                          h3("I want my neighborhood to be:",style = "font-family: 'Arial';
                             color: #2D3D50; text-align: left;
-                            padding: 20px"),
+                            padding: 5px"),
                          fluidRow(
                            column(2,
                                   selectInput("First",
@@ -165,7 +165,7 @@ shinyUI(
                             style = "font-family: 'Arial';
                             color: #fff; text-align: center;
                             background-image: url('texturebg2.png');
-                            padding: 20px"),
+                            padding: 10px"),
                          br(),
                          fluidRow(
                            p("select in information of the apartment you are considering:"),
