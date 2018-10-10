@@ -51,6 +51,8 @@ all_other_raw <- read.csv("../data/all_other.csv", as.is = T)
 housing_raw0 <- read.csv("../output/new_housing.csv", as.is = T)
 housing_raw0 <- cbind(housing_raw0, X = 1:nrow(housing_raw0))
 housing_raw <- housing_raw0[,c(9,8,1,2,3,4,5,6,7)] %>% arrange(zipcode)
+housing_raw$price = as.numeric(gsub(",","",housing_raw$price))
+housing_raw = na.omit(housing_raw)
 ```
 
 # Match crime location with zipcode
@@ -146,9 +148,15 @@ housing <- housing_raw %>%
   filter(zipcode %in% zipcode_man)
 ```
 
-# Count by zipcode, fill in NAs, rank and calculate probability
+## Find median price for houses by zip code
+```{r}
+housing_m <- housing %>%
+  group_by(zipcode) %>%
+  mutate(medprice = median(price))
+housing_m <- unique(housing_m[,c("zipcode","medprice")])
+``` 
 
-If the count of a zipcode area is missing, fill it with the nearest 6 zipcode area to it.
+# Count by zipcode, fill in NAs, rank and calculate probability
 
 The probability is the CDF of a uniform distribution from 0 to the maximum number in count.
 
@@ -386,6 +394,7 @@ save(entertainment,file="../output/entertainment.RData")
 save(restaurant_overall,file="../output/restaurant_overall.Rdata")
 save(feature_all,file="../output/feature_all.RData")
 save(housing_all,file="../output/housing_all.RData")
+save(housing_m, file = "../output/housingMed.RData")
 save(zip_none,file="../output/zip_none.RData")
 
 # names(count.theatre)[names(count.theatre) == 'ZIP'] <- 'Zip'
