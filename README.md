@@ -1,12 +1,13 @@
 # Project 2: Rent by Your Priority Choice
 
-![image](doc/overlook.jpg)
+![image](doc/page1.png)
 
 ## Rent by Your Priority
 Term: Fall 2018
 
-+ Group 6 #
-+ **Rent by Your Priority**: + Team members
++ Group 6 
++ **Rent by Your Priority**: 
+	+ **Team members**: 
 	+ Bai, Ruoxi  rb3313@columbia.edu
 	+ Cui, Jiayi  jc4884@columbia.edu
 	+ Li, Zhirong  zl2628@columbia.edu
@@ -23,12 +24,12 @@ On the Comparison page, users can choose whichever zip code they want, and see h
 
 + **Contribution statement**: ([default](doc/a_note_on_contributions.md)) All team members contributed equally in all stages of this project. All team members approve our work presented in this GitHub repository including this contributions statement.
 
-Data Processing: Jiayi Cui, Ruoxi Bai, 
-UI&Server Building: (page 1), Kayla Smith(page 2)
-CSS Design: Zhirong Li, Yukun Pei, 
-Home Page Design: Yukun Pei
-Time Series Prediction: Jiayi Cui
-Feature Score Calculation: Ruoxi Bai
+	+ Data Processing: Jiayi Cui, Ruoxi Bai, Zhirong Li
+	+ UI&Server Building: Ruoxi Bai, Zhirong Li(page 1), Kayla Smith(page 2)
+	+ CSS Design: Ruoxi Bai, Zhirong Li, Yukun Pei
+	+ Home Page Design: Yukun Pei
+	+ Time Series Prediction: Jiayi Cui
+	+ Feature Score Calculation: Ruoxi Bai
 
 
 Following [suggestions](http://nicercode.github.io/blog/2013-04-05-projects/) by [RICH FITZJOHN](http://nicercode.github.io/about/#Team) (@richfitz). This folder is orgarnized as follows.
