@@ -76,7 +76,7 @@ shinyServer(function(input, output,session) {
       # http://leaflet-extras.github.io/leaflet-providers/preview/
       addProviderTiles('Esri.WorldTopoMap') %>%
       setView(lng = -73.971035, lat = 40.775659, zoom = 11) %>%
-      addMarkers(data=housingFilter()[1:20,],
+      addMarkers(data=housingFilter(),
                  lng=~lng,
                  lat=~lat,
                  #clusterOptions=markerClusterOptions(),
@@ -109,7 +109,7 @@ shinyServer(function(input, output,session) {
     filtered.house = data.frame(merge(f_house,zcomb, by.x="zipcode",by.y="zip", all.x = T))
     ordered_house = filtered.house %>% arrange(desc(combined))
     
-    if(sum(filter.h)<20){n = filter.h} else{n=20}
+    if(sum(filter.h)<20){n = sum(filter.h)} else{n=20}
     
     return(ordered_house[1:n,])
   })
@@ -188,8 +188,7 @@ shinyServer(function(input, output,session) {
 
   # get the housing data in the bounds
   marksInBounds <- reactive({
-    if (is.null(input$map_bounds))
-      return(housing_all[FALSE,])
+    if (is.null(input$map_bounds)) return(housing_all[FALSE,])
     bounds <- input$map_bounds
     latRng <- range(bounds$north, bounds$south)
     lngRng <- range(bounds$east, bounds$west)
@@ -203,39 +202,40 @@ shinyServer(function(input, output,session) {
 
   # sort housing in current zoom level
   observe({
-    housing_sort=marksInBounds()
-    action=apply(housing_sort,1,function(r){
-      addr=r["addr"]
-      lat=r["lat"]
-      lng=r["lng"]
-      paste0("<a class='go-map' href='' data-lat='",lat,"'data-lng='",lng,"'>",addr,'</a>')
+    # housing_sort=marksInBounds()
+    # action=apply(housing_sort,1,function(r){
+    #   addr=r["addr"]
+    #   lat=r["lat"]
+    #   lng=r["lng"]
+    #   paste0("<a class='go-map' href='' data-lat='",lat,"'data-lng='",lng,"'>",addr,'</a>')
+    # }
+    # )
+    # housing_sort$addr=action
+    # output$recom <- renderDataTable(housing_sort,
+    #                                 # options = list("sScrollX" = "100%", "bLengthChange" = FALSE),
+    #                                 escape = FALSE)
+    
+    if(nrow(housing_sort)!=0){
+      action=apply(housing_sort,1,function(r){
+        addr=r["addr"]
+        lat=r["lat"]
+        lng=r["lng"]
+        paste0("<a class='go-map' href='' data-lat='",lat,"'data-lng='",lng,"'>",addr,'</a>')
+      }
+      )
+      housing_sort$addr=action
+      output$recom <- renderDataTable(housing_sort[,c(3:7,1)],
+                                      # options = list("sScrollX" = "100%", "bLengthChange" = FALSE),
+                                      escape = FALSE)
+      # output$recom <- renderDataTable(housing_sort[,c("addr","price","bedrooms","bathrooms")],escape=FALSE)
     }
-    )
-    housing_sort$addr=action
-    output$recom <- renderDataTable(housingFilter()[,c(3:7,1)],
-                                    # options = list("sScrollX" = "100%", "bLengthChange" = FALSE),
-                                    escape = FALSE)
-    # if(nrow(housing_sort)!=0){
-    #   action=apply(housing_sort,1,function(r){
-    #     addr=r["addr"]
-    #     lat=r["lat"]
-    #     lng=r["lng"]
-    #     paste0("<a class='go-map' href='' data-lat='",lat,"'data-lng='",lng,"'>",addr,'</a>')
-    #   }
-    #   )
-    #   housing_sort$addr=action
-    #   output$recom <- renderDataTable(housingFilter()[,c(3:7,1)],
-    #                                   # options = list("sScrollX" = "100%", "bLengthChange" = FALSE),
-    #                                   escape = FALSE)
-    #   # output$recom <- renderDataTable(housing_sort[,c("addr","price","bedrooms","bathrooms")],escape=FALSE)
-    # }
-    # else{
-    #   # output$recom = renderDataTable(housing_sort[,c("addr","price","bedrooms","bathrooms")])
-    #   output$recom <- renderDataTable(housingFilter()[,c(3:7,1)]
-    #                                   # options = list("sScrollX" = "100%", "bLengthChange" = FALSE),
-    #                                   # escape = FALSE
-    #                                   )
-    # }
+    else{
+      # output$recom = renderDataTable(housing_sort[,c("addr","price","bedrooms","bathrooms")])
+      output$recom <- renderDataTable(housingFilter()[,c(3:7,1)]
+                                      # options = list("sScrollX" = "100%", "bLengthChange" = FALSE),
+                                      # escape = FALSE
+                                      )
+    }
   })
 
   # When point in map is hovered, show a popup with housing info
