@@ -82,6 +82,17 @@ write.csv(crime_manh, file = "../output/Crime_manhattan.csv")
 
 
 # Data processing
+
+## Remove wrong data
+
+Some houses' longitude and latitude are clearly inconsistent with their zipcode or address. Remove these rows.
+
+```{r}
+housing_raw = housing_raw %>% filter(lat<=40.9 & lat>=40.7 & lng>=-74.1 & lng<=-73.8)
+```
+
+## Prepare dataframe
+
 ```{r}
 rest_manh_v <- rest_raw %>%
   distinct(BUILDING, STREET, ZIPCODE,.keep_all = TRUE) %>%
@@ -136,6 +147,8 @@ housing <- housing_raw %>%
 ```
 
 # Count by zipcode, fill in NAs, rank and calculate probability
+
+If the count of a zipcode area is missing, fill it with the nearest 6 zipcode area to it.
 
 The probability is the CDF of a uniform distribution from 0 to the maximum number in count.
 
