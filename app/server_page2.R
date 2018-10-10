@@ -133,7 +133,7 @@ shinyServer(function(input, output,session) {
 
     }
     else{
-      if(input$map_zoom<12){
+      if(input$map_zoom<14){
         return('cloud')
       }
       else{
@@ -204,27 +204,38 @@ shinyServer(function(input, output,session) {
   # sort housing in current zoom level
   observe({
     housing_sort=marksInBounds()
-    if(nrow(housing_sort)!=0){
-      action=apply(housing_sort,1,function(r){
-        addr=r["addr"]
-        lat=r["lat"]
-        lng=r["lng"]
-        paste0("<a class='go-map' href='' data-lat='",lat,"'data-lng='",lng,"'>",addr,'</a>')
-      }
-      )
-      housing_sort$addr=action
-      output$recom <- renderDataTable(housingFilter()[,c(3:7,1)],
-                                      # options = list("sScrollX" = "100%", "bLengthChange" = FALSE),
-                                      escape = FALSE)
-      # output$recom <- renderDataTable(housing_sort[,c("addr","price","bedrooms","bathrooms")],escape=FALSE)
+    action=apply(housing_sort,1,function(r){
+      addr=r["addr"]
+      lat=r["lat"]
+      lng=r["lng"]
+      paste0("<a class='go-map' href='' data-lat='",lat,"'data-lng='",lng,"'>",addr,'</a>')
     }
-    else{
-      # output$recom = renderDataTable(housing_sort[,c("addr","price","bedrooms","bathrooms")])
-      output$recom <- renderDataTable(housingFilter()[,c(3:7,1)]
-                                      # options = list("sScrollX" = "100%", "bLengthChange" = FALSE),
-                                      # escape = FALSE
-                                      )
-    }
+    )
+    housing_sort$addr=action
+    output$recom <- renderDataTable(housingFilter()[,c(3:7,1)],
+                                    # options = list("sScrollX" = "100%", "bLengthChange" = FALSE),
+                                    escape = FALSE)
+    # if(nrow(housing_sort)!=0){
+    #   action=apply(housing_sort,1,function(r){
+    #     addr=r["addr"]
+    #     lat=r["lat"]
+    #     lng=r["lng"]
+    #     paste0("<a class='go-map' href='' data-lat='",lat,"'data-lng='",lng,"'>",addr,'</a>')
+    #   }
+    #   )
+    #   housing_sort$addr=action
+    #   output$recom <- renderDataTable(housingFilter()[,c(3:7,1)],
+    #                                   # options = list("sScrollX" = "100%", "bLengthChange" = FALSE),
+    #                                   escape = FALSE)
+    #   # output$recom <- renderDataTable(housing_sort[,c("addr","price","bedrooms","bathrooms")],escape=FALSE)
+    # }
+    # else{
+    #   # output$recom = renderDataTable(housing_sort[,c("addr","price","bedrooms","bathrooms")])
+    #   output$recom <- renderDataTable(housingFilter()[,c(3:7,1)]
+    #                                   # options = list("sScrollX" = "100%", "bLengthChange" = FALSE),
+    #                                   # escape = FALSE
+    #                                   )
+    # }
   })
 
   # When point in map is hovered, show a popup with housing info
@@ -303,9 +314,9 @@ shinyServer(function(input, output,session) {
   observeEvent(input$button2,{
     proxy<-leafletProxy("map")
     proxy %>%
-      setView(lng = -73.971035, lat = 40.775659, zoom = 12) %>%
+      setView(lng = -73.971035, lat = 40.775659, zoom = 11) %>%
       removeMarker(layerId="1") %>%
-      addMarkers(data=housing_all,
+      addMarkers(data=housingFilter(),
                  lng=~lng,
                  lat=~lat,
                  clusterOptions=markerClusterOptions(),
