@@ -2,21 +2,14 @@
 Fall 2018
 
 
-Group 6
-
-Bai, Ruoxi  rb3313@columbia.edu
-
-Cui, Jiayi  jc4884@columbia.edu
-
-Li, Zhirong  zl2628@columbia.edu
-
-Pei, Yukun  yp2446@columbia.edu
-
-Smith, Kayla kys2112@columbia.edu
++ Group 6
+	
 
 ### [Project Description](doc/project2_desc.md)
 
 ![image](doc/overlook.jpg)
+
+
 
 In this second project of GR5243 Applied Data Science, we develop a version 2.0 of an *Exploratory Data Analysis and Visualization* shiny app on a topic of your choice using [NYC Open Data](https://opendata.cityofnewyork.us/) or U.S. government open data released on the [data.gov](https://data.gov/) website. See [Project 2 Description](doc/project2_desc.md) for more details.  
 
@@ -31,18 +24,20 @@ The **learning goals** for this project is:
 
 *The above general statement about project 2 can be removed once you are finished with your project. It is optional.
 
-## Project Title Lorem ipsum dolor sit amet
-Term: Spring 2018
+## Rent by Your Priority
+Term: Fall 2018
 
-+ Team #
-+ **Projec title**: + Team members
-	+ team member 1
-	+ team member 2
-	+ team member 3
-	+ team member 4
-	+ team member 5
++ Group 6 #
++ **Rent by Your Priority**: + Team members
+	+Bai, Ruoxi  rb3313@columbia.edu
+	+Cui, Jiayi  jc4884@columbia.edu
+	+Li, Zhirong  zl2628@columbia.edu
+	+Pei, Yukun  yp2446@columbia.edu
+	+Smith, Kayla kys2112@columbia.edu
 
-+ **Project summary**: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
++ **Project summary**: This app provides a platform for people to search house rental based on their most care issues. We include safety, transportation, hospital, price, entertainment, restaurant and grocery. Users can pick 3 top prior features and we give recommendation according to the ranked priorities.
+
+On the Recommendation page, users can not only filter by house type and price range, but also choose 3 top preferences and their weights. The recommendation system will then show the top 20 most sutable houses.
 
 + **Contribution statement**: ([default](doc/a_note_on_contributions.md)) All team members contributed equally in all stages of this project. All team members approve our work presented in this GitHub repository including this contributions statement. 
 
