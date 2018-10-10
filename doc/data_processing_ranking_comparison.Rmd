@@ -317,23 +317,28 @@ count.complaint <- complaint %>%
 
 # Output individual features
 ```{r}
+# restaurants "restaurant_overall"
 save(count.restaurant_violation,file="../output/count_restaurant_violation.Rdata")
 save(count.rest_american,file="../output/rest_american.Rdata")
 save(count.rest_chinese,file="../output/rest_chinese.Rdata")
 save(count.rest_italian,file="../output/rest_italian.Rdata")
 save(count.rest_japanese,file="../output/rest_japanese.Rdata")
 save(count.rest_pizza,file="../output/rest_pizza.Rdata")
+# party "party"
 save(count.bar,file="../output/count_bar.Rdata")
 save(count.club,file="../output/count_club.Rdata")
+# transportation "travel"
 save(count.subway,file="../output/count_subway.Rdata")
 save(count.bus,file="../output/count_bus.Rdata")
-save(count.hospital,file="../output/count_hospital.Rdata")
-save(count.market,file="../output/count_market.Rdata")
+save(count.carcrash,file="../output/count_carcrash.Rdata")
+# art "entertainment"
 save(count.theatre,file="../output/count_theatre.Rdata")
 save(count.gallery,file="../output/count_gallery.Rdata")
+# single features
+save(count.hospital,file="../output/count_hospital.Rdata")
+save(count.market,file="../output/count_market.Rdata")
 save(count.crime,file="../output/count_crime.Rdata")
 save(count.park,file="../output/count_park.Rdata")
-save(count.carcrash,file="../output/count_carcrash.Rdata")
 save(count.complaint,file="../output/count_complaint.Rdata")
 ```   
 
@@ -341,6 +346,9 @@ save(count.complaint,file="../output/count_complaint.Rdata")
 ```{r}
 travel <- cbind(count.bus, count.subway[,-1])
 colnames(travel) = c("zip",paste(rep(c("bus", "subway"), each = 3),rep(c("count","rank","prob"),2),sep = "."))
+
+party <- cbind(count.bar, count.club[,-1])
+colnames(party) = c("zip",paste(rep(c("bar", "club"), each = 3),rep(c("count","rank","prob"),2),sep = "."))
 
 entertainment <- cbind(count.theatre, count.gallery[,-1])
 colnames(entertainment) = c("zip",paste(rep(c("theatre", "gallery"), each = 3),rep(c("count","rank","prob"),2),sep = "."))
@@ -360,6 +368,7 @@ zip_none = setdiff(zipcode_man, unique(housing$zipcode))
 
 # save into RData
 save(travel,file="../output/travel.Rdata")
+save(party,file="../output/party.RData")
 save(entertainment,file="../output/entertainment.RData")
 save(restaurant_overall,file="../output/restaurant_overall.Rdata")
 save(feature_all,file="../output/feature_all.RData")
