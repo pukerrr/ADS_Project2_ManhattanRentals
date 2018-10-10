@@ -1,8 +1,5 @@
 # Project 2: Rent by Your Priority Choice
-Fall 2018
 
-
-+ Group 6
 	
 
 ### [Project Description](doc/project2_desc.md)
@@ -29,13 +26,14 @@ Term: Fall 2018
 
 + Group 6 #
 + **Rent by Your Priority**: + Team members
-	+Bai, Ruoxi  rb3313@columbia.edu
-	+Cui, Jiayi  jc4884@columbia.edu
-	+Li, Zhirong  zl2628@columbia.edu
-	+Pei, Yukun  yp2446@columbia.edu
-	+Smith, Kayla kys2112@columbia.edu
+	+ Bai, Ruoxi  rb3313@columbia.edu
+	+ Cui, Jiayi  jc4884@columbia.edu
+	+ Li, Zhirong  zl2628@columbia.edu
+	+ Pei, Yukun  yp2446@columbia.edu
+	+ Smith, Kayla kys2112@columbia.edu
 
-+ **Project summary**: This app provides a platform for people to search house rental based on their most care issues. We include safety, transportation, hospital, price, entertainment, restaurant and grocery. Users can pick 3 top prior features and we give recommendation according to the ranked priorities.
++ **Project summary**: 
+This app provides a platform for people to search house rental based on their most care issues. We include safety, transportation, hospital, price, entertainment, restaurant and grocery. Users can pick 3 top prior features and we give recommendation according to the ranked priorities.
 
 On the Recommendation page, users can not only filter by house type and price range, but also choose 3 top preferences and their weights. The recommendation system will then show the top 20 most sutable houses.
 
