@@ -5,9 +5,9 @@
 ## Rent by Your Priority
 Term: Fall 2018
 
-+ Group 6 #
++ Group 6 
 + **Rent by Your Priority**: 
-	+ Team members: 
+	+ **Team members**: 
 	+ Bai, Ruoxi  rb3313@columbia.edu
 	+ Cui, Jiayi  jc4884@columbia.edu
 	+ Li, Zhirong  zl2628@columbia.edu
