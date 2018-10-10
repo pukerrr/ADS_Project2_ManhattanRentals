@@ -136,6 +136,7 @@ shinyUI(
                                 sliderInput("third_weight", label = "Weight:",
                                             min = 0, max = 1, value = 0.2, step = 0.1)),
                          column(width=2, 
+                                checkboxInput("select_all", label = "Select all features", value = FALSE))),
                          fluidRow(
                          column(6,
                                 dataTableOutput("recom")
