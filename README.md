@@ -1,25 +1,6 @@
 # Project 2: Rent by Your Priority Choice
 
-	
-
-### [Project Description](doc/project2_desc.md)
-
 ![image](doc/overlook.jpg)
-
-
-
-In this second project of GR5243 Applied Data Science, we develop a version 2.0 of an *Exploratory Data Analysis and Visualization* shiny app on a topic of your choice using [NYC Open Data](https://opendata.cityofnewyork.us/) or U.S. government open data released on the [data.gov](https://data.gov/) website. See [Project 2 Description](doc/project2_desc.md) for more details.  
-
-The **learning goals** for this project is:
-
-- business intelligence for data science
-- study legacy codes and further development
-- data cleaning
-- data visualization
-- systems development/design life cycle
-- shiny app/shiny server
-
-*The above general statement about project 2 can be removed once you are finished with your project. It is optional.
 
 ## Rent by Your Priority
 Term: Fall 2018
@@ -35,7 +16,9 @@ Term: Fall 2018
 + **Project summary**: 
 This app provides a platform for people to search house rental based on their most care issues. We include safety, transportation, hospital, price, entertainment, restaurant and grocery. Users can pick 3 top prior features and we give recommendation according to the ranked priorities.
 
-On the Recommendation page, users can not only filter by house type and price range, but also choose 3 top preferences and their weights. The recommendation system will then show the top 20 most sutable houses.
+On the Recommendation page, users can not only filter by house type and price range, but also choose 3 top preferences and their weights. The recommendation system will then show the top 20 most suitable houses. Also, the dot map shows where the house is and save the trouble of searching them on Google map.
+
+On the Comparison page, users can choose whichever zip code they want, and see how good this area is in different features among all Manhattan regions by zip code. Our App also provides a price trend plot which not only shows the historical price, but also the predicted price trend in the next 12 months. This page allows you to compare the housing among the whole Manhattan and the price over time at the same time.
 
 + **Contribution statement**: ([default](doc/a_note_on_contributions.md)) All team members contributed equally in all stages of this project. All team members approve our work presented in this GitHub repository including this contributions statement. 
 
