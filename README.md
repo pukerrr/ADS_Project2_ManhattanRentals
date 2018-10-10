@@ -1,8 +1,16 @@
 # Project 2: Rent by Your Priority Choice
+Fall 2018
+
+Group 6
+1   Bai, Ruoxi  rb3313@columbia.edu
+2   Cui, Jiayi  jc4884@columbia.edu
+3  Li, Zhirong  zl2628@columbia.edu
+4   Pei, Yukun  yp2446@columbia.edu
+5 Smith, Kayla kys2112@columbia.edu
 
 ### [Project Description](doc/project2_desc.md)
 
-![screenshot](doc/fig/overlook.jpg)
+![image](doc/fig/overlook.jpg)
 
 In this second project of GR5243 Applied Data Science, we develop a version 2.0 of an *Exploratory Data Analysis and Visualization* shiny app on a topic of your choice using [NYC Open Data](https://opendata.cityofnewyork.us/) or U.S. government open data released on the [data.gov](https://data.gov/) website. See [Project 2 Description](doc/project2_desc.md) for more details.  
 
