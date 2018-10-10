@@ -100,3 +100,128 @@ ggplot(new_time_series, aes(x=date, y=median_price, group=zipcode)) +
   geom_point(aes(color=zipcode))
 ```
 
+```{r}
+Central_Harlem <- c(10026, 10027, 10030, 10037, 10039)
+East_Harlem <- c(10029, 10035)
+Chelsea_Clinton <- c(10001, 10011, 10018, 10019, 10020, 10036)
+GramecyPark_MurrayHill <- c(10010, 10016, 10017, 10022)
+GreenwichVillage_Soho <- c(10012, 10013, 10014)
+Lower_Manhattan <- c(10004, 10005, 10006, 10007, 10038, 10280)
+Lower_East_side <- c(10002, 10003, 10009)
+Upper_East_side <- c(10021, 10028, 10044, 10065, 10075, 10128)
+Upper_West_side <- c(10023, 10024, 10025)
+Inwook_Washington_Heights <- c(10031, 10032, 10033, 10034, 10040)
+```
+
+# Reshape price data by region
+```{r}
+Central_Harlem_Price <- median_price %>%
+  filter(RegionName %in% Central_Harlem)
+Central_Harlem_mean <- apply(Central_Harlem_Price[,11:102], 2, mean)
+
+East_Harlem_Price <- median_price %>%
+  filter(RegionName %in% East_Harlem)
+East_Harlem_mean <- apply(East_Harlem_Price[,11:102], 2, mean)
+
+Chelsea_Clinton_Price <- median_price %>%
+  filter(RegionName %in% Chelsea_Clinton)
+Chelsea_Clinton_mean <- apply(Chelsea_Clinton_Price[,11:102], 2, mean)
+
+GramecyPark_MurrayHill_Price <- median_price %>%
+  filter(RegionName %in% GramecyPark_MurrayHill)
+GramecyPark_MurrayHill_mean <- apply(GramecyPark_MurrayHill_Price[,11:102], 2, mean)
+
+GreenwichVillage_Soho_Price <- median_price %>%
+  filter(RegionName %in% GreenwichVillage_Soho)
+GreenwichVillage_Soho_mean <- apply(GreenwichVillage_Soho_Price[,11:102], 2, mean)
+
+Lower_Manhattan_Price <- median_price %>%
+  filter(RegionName %in% Lower_Manhattan)
+Lower_Manhattan_mean <- apply(Lower_Manhattan_Price[,11:102], 2, mean)
+
+Lower_East_side_Price <- median_price %>%
+  filter(RegionName %in% Lower_East_side)
+Lower_East_side_mean <- apply(Lower_East_side_Price[,11:102], 2, mean)
+
+Upper_East_side_Price <- median_price %>%
+  filter(RegionName %in% Upper_East_side)
+Upper_East_side_mean <- apply(Upper_East_side_Price[,11:102], 2, mean)
+
+Upper_West_side_Price <- median_price %>%
+  filter(RegionName %in% Upper_West_side)
+Upper_West_side_mean <- apply(Upper_West_side_Price[,11:102], 2, mean)
+
+Inwook_Washington_Heights_Price <- median_price %>%
+  filter(RegionName %in% Inwook_Washington_Heights)
+Inwook_Washington_Heights_mean <- apply(Inwook_Washington_Heights_Price[,11:102], 2, mean)
+```
+
+```{r}
+price_by_region <- data.frame(Central_Harlem = Central_Harlem_mean,
+                              East_Harlem = East_Harlem_mean,
+                              Chelsea_Clinton = Chelsea_Clinton_mean, 
+                              GramecyPark_MurrayHill = GramecyPark_MurrayHill_mean,
+                              GreenwichVillage_Soho = GreenwichVillage_Soho_mean,
+                              Lower_Manhattan = Lower_Manhattan_mean,
+                              Lower_East_side = Lower_East_side_mean,
+                              Upper_East_side = Upper_East_side_mean,
+                              Upper_West_side = Upper_West_side_mean,
+                              Inwook_Washington_Heights = Inwook_Washington_Heights_mean)
+```
+
+```{r}
+pred_by_region <- matrix(NA, 12, 10)
+for (i in 1:10){
+  ts <- ts(price_by_region[,i])
+  model <- auto.arima(ts)
+  pred_by_region[,i] <- predict(model, 12)$pred
+}
+```
+
+```{r}
+year_type1 <- c(rep(2011:2018, each = 12), rep(2019, 8))
+month_type1 <- c(rep(1:12, 8), 1:8)
+date_type1 <- paste(year_type1, month_type1, sep = '-')
+region_price_predict <- data.frame(date = date_type1,
+                                   Central_Harlem = c(Central_Harlem_mean, pred_by_region[,1]),
+                                   East_Harlem = c(East_Harlem_mean, pred_by_region[,2]),
+                                   Chelsea_Clinton = c(Chelsea_Clinton_mean, pred_by_region[,3]),
+                                   GramecyPark_MurrayHill = c(GramecyPark_MurrayHill_mean,
+                                                              pred_by_region[,4]),
+                                   GreenwichVillage_Soho = c(GreenwichVillage_Soho_mean,
+                                                             pred_by_region[,5]),
+                                   Lower_Manhattan = c(Lower_Manhattan_mean, pred_by_region[,6]),
+                                   Lower_East_side = c(Lower_East_side_mean, pred_by_region[,7]),
+                                   Upper_East_side = c(Upper_East_side_mean, pred_by_region[,8]),
+                                   Upper_West_side = c(Upper_West_side_mean, pred_by_region[,9]),
+                                   Inwook_Washington_Heights = c(Inwook_Washington_Heights_mean,
+                                                                 pred_by_region[,10]))
+```
+
+# Price trend with prediction by region
+```{r}
+# Convert to type 2 data set first
+region_price_pred <- data.frame(date = rep(date_type1, 10),
+                                price = c(region_price_predict$Central_Harlem,
+                                          region_price_predict$East_Harlem,
+                                          region_price_predict$Chelsea_Clinton,
+                                          region_price_predict$GramecyPark_MurrayHill,
+                                          region_price_predict$GreenwichVillage_Soho,
+                                          region_price_predict$Lower_Manhattan,
+                                          region_price_predict$Lower_East_side,
+                                          region_price_predict$Upper_East_side,
+                                          region_price_predict$Upper_West_side,
+                                          region_price_predict$Inwook_Washington_Heights),
+                                region = rep(c('Central_Harlem', 'East_Harlem', 'Chelsea_Clinton',
+                                             'GramecyPark_MurrayHill', 'GreenwichVillage_Soho',
+                                             'Lower_Manhattan', 'Lower_East_side',
+                                             'Upper_East_side', 'Upper_West_side',
+                                             'Inwook_Washington_Heights'), each = 104))
+```
+
+```{r}
+ggplot(region_price_pred, aes(x=date, y=price, group=region)) +
+  geom_line(aes(color=region))+
+  geom_point(aes(color=region))
+```
+
