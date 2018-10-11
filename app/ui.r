@@ -284,7 +284,7 @@ shinyUI(
                              tabsetPanel(
                                tabPanel("Time Series",plotOutput("time_series")),
                                tabPanel("Prediction",plotOutput("prediction")),
-                               tabPanel("Neighborhood Features", plotOutput("boxplot"))
+                               tabPanel("Neighborhood Features", plotOutput("boxplot",height = "700px"))
                              )
                            )
                          )

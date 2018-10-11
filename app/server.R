@@ -446,7 +446,7 @@ shinyServer(function(input, output,session) {
     req(nrow(df.box()) > 0)   
     ggplot() +
       geom_boxplot(data=df.box(), aes(x=Category, y=Count, fill=Category),
-                   lwd = 1, color="black", fill="palegreen") +
+                   lwd = 1, color="black", fill="lavenderblush2") +
       geom_point(data=df.point(), aes(x=Category, y=Count, color=factor(Zipcode)), size=3) +
       facet_wrap(~Group, scales="free") +
       ggtitle( "Neighborhood Features" ) +
