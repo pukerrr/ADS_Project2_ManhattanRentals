@@ -2,7 +2,7 @@
 
 ![image](doc/page1.png)
 
-## Rent by Your Priority
+## Rent by Your Priority Preferences
 Term: Fall 2018
 
 + Group 6 
