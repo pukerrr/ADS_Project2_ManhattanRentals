@@ -287,7 +287,8 @@ shinyUI(
                              )
                            )
                          )
-                       )
+                       ),
+                       p("GR5243 Applied Data Science Section2 Group6")
                        )
             )
             )
