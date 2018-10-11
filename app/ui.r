@@ -66,25 +66,17 @@ shinyUI(
                             padding: 5px"),
                          fluidRow(
                            column(width=2,
-                                  #style = "margin-top: 25px;display:inline-block;margin-right: 0px;margin-left: 120px",
                                   dropdownButton(circle = FALSE,
                                                  label="Min price",  status = "default",
                                                  numericInput(inputId="min_price", label = "choose",value=1000, min=750,max=1e5,step=250)
                                   )
                            ),
                            column(width=2,
-                                  #style = "margin-top: 25px;display:inline-block;margin-right: 0px;",
                                   dropdownButton(circle = FALSE,
                                                  label="Max price",  status = "default",
                                                  numericInput(inputId="max_price", value=10000, label="choose",min=750,max=1e5,step=250)
                                   )),
-                           # column(4,
-                           #        
-                           #        # Copy the line below to make a slider range 
-                           #        sliderInput("slider2", label = h3("price range"), min = 500, 
-                           #                    max = 10000, value = c(1000, 4000))),
                            column(width=2, 
-                                  #style="margin-top: 25px;display:inline-block;margin-right: 10px",
                                   dropdownButton(circle = FALSE,
                                                  label = "Bedrooms", status = "default",
                                                  selectInput(inputId="min_bedrooms", label="choose", 
@@ -92,18 +84,12 @@ shinyUI(
                                                              selected = 2
                                                  ))
                                   ),
-                
                            column(width=2,
-                                  #style = "margin-top: 25px;;display:inline-block;margin-right: 10px;",
                                   dropdownButton(circle = FALSE,
                                                  label = "Bathroom", status = "default",
                                                  selectInput(inputId="min_bathrooms", label="choose", choices = c(1,2,3,4,5,6)
                                                  )
                                   ))
-                           # column(width=2, 
-                           #        #style = "margin-top: 25px;display:inline-block;margin-right: 0px;",
-                           #        actionButton("button2",label="Reset" 
-                           #                     ))
                            ),
               
                          h3("I want my neighborhood to be:",style = "font-family: 'Arial';
@@ -123,18 +109,6 @@ shinyUI(
                                                           "Park"="park",
                                                           "Free of Complaints"="complaint"),
                                               selected="rest")),
-                                  # selectInput("First",
-                                  #             label = "First Preference",
-                                  #             choices = c("rest",
-                                  #                         "travel",
-                                  #                         "crime",
-                                  #                         "party",
-                                  #                         "entertainment",
-                                  #                         "hospital",
-                                  #                         "market",
-                                  #                         "park",
-                                  #                         "complaint"),
-                                  #             selected="rest")),
                            column(2, 
                                   sliderInput("first_weight", label = "Weight:",
                                               min = 0, max = 1, value = 0.5, step = 0.1)),
@@ -151,18 +125,6 @@ shinyUI(
                                                           "Park"="park",
                                                           "Free of Complaints"="complaint"),
                                               selected="travel")),
-                                  # selectInput("Second",
-                                  #             label = "Second Preference",
-                                  #             choices = c("rest",
-                                  #                         "travel",
-                                  #                         "crime",
-                                  #                         "party",
-                                  #                         "entertainment",
-                                  #                         "hospital",
-                                  #                         "market",
-                                  #                         "park",
-                                  #                         "complaint"),
-                                  #             selected="travel")),
                            column(2, 
                                   sliderInput("second_weight", label = "Weight:",
                                               min = 0, max = 1, value = 0.3, step = 0.1)),
@@ -179,29 +141,36 @@ shinyUI(
                                                           "Park"="park",
                                                           "Free of Complaints"="complaint"),
                                               selected="crime")),
-                                  # selectInput("Third",
-                                  #             label = "Third Preference",
-                                  #             choices = c("rest",
-                                  #                         "travel",
-                                  #                         "crime",
-                                  #                         "party",
-                                  #                         "entertainment",
-                                  #                         "hospital",
-                                  #                         "market",
-                                  #                         "park",
-                                  #                         "complaint"),
-                                  #             selected="crime")),
                            column(2, 
                                 sliderInput("third_weight", label = "Weight:",
                                             min = 0, max = 1, value = 0.2, step = 0.1)),
                          column(width=2, 
-                                checkboxInput("select_all", label = "Select all features", value = FALSE))),
+                                checkboxInput("select_all", label = "Select all features", value = FALSE)),
+                         column(width=1, offset = 4,
+                                style = "margin-top: 25px;display:inline-block;margin-right: 0px;",
+                                actionButton("reset_map",label="Reset Map"))#,
+                         # column(width=2, offset = 4,
+                         #        checkboxInput("reset_map", label = "Reset Map", value = FALSE))
+                         ),
                          fluidRow(
                          column(6,
                                 dataTableOutput("recom")
                          ), 
                          column(3,
-                                leafletOutput("map", width = "220%", height = 650)
+                                leafletOutput("map", width = "220%", height = 650),
+                                absolutePanel(id="legend",
+                                              fixed = F,
+                                              draggable = F, top = 60, 
+                                              left = "auto", 
+                                              right = 115, 
+                                              bottom = "auto",
+                                              width = 125, height = 215,
+                                              checkboxInput("Bus", label = "Bus",value= FALSE),
+                                              checkboxInput("Subway",label="Subway",value = FALSE),
+                                              checkboxInput("Market", label = "Market",value = FALSE),
+                                              checkboxInput("Restaurant", label = "Restaurant",value= FALSE)                               
+                                              
+                                )
                          )
                          ),
                          h2("Do I have a Good Deal?",

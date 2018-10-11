@@ -292,12 +292,12 @@ shinyServer(function(input, output,session) {
   # default_house = ordered_house[1:20,]
   
   ###### Clear Choices ######
-  observeEvent(input$button2,{
+  observeEvent(input$reset_map,{
     proxy<-leafletProxy("map")
     proxy %>%
       setView(lng = -73.971035, lat = 40.775659, zoom = 11.5) %>%
       removeMarker(layerId="1") %>%
-      addMarkers(data=housing,
+      addMarkers(data=housingFilter(),
                  lng=~lng,
                  lat=~lat,
                  clusterOptions=markerClusterOptions(),
