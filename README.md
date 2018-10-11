@@ -1,6 +1,6 @@
 # Project 2: Rent by Your Priority Preferences
 
-![image](doc/page1.png)
+![image](doc/overview.png)
 
 ## Rent by Your Priority Preferences
 Term: Fall 2018
