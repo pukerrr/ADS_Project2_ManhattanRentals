@@ -26,6 +26,10 @@ source("../lib/timeSeries.R")
 median_price <- read.csv('../output/median_price_manhattan.csv')
 df.boxplot <- read.csv("../output/boxplot_data.csv")
 load("../output/housing_all.RData") 
+load("../output/markets.RData")
+load("../output/restaurant.RData")
+load("../output/subway.RData")
+load("../output/bus_stop.RData")
 
 housing_all$price = as.numeric(gsub(",","",housing_all$price))
   
@@ -79,7 +83,7 @@ shinyServer(function(input, output,session) {
     leaflet() %>%
       # http://leaflet-extras.github.io/leaflet-providers/preview/
       addProviderTiles('Esri.WorldTopoMap') %>%
-      setView(lng = -73.971035, lat = 40.775659, zoom = 11) %>%
+      setView(lng = -73.971035, lat = 40.775659, zoom = 11.5) %>%
       addMarkers(data=housingFilter(),
                  lng=~lng,
                  lat=~lat,
@@ -221,28 +225,6 @@ shinyServer(function(input, output,session) {
     output$recom <- renderDataTable(housing_sort[,c(3:7,1)],
                                     # options = list("sScrollX" = "100%", "bLengthChange" = FALSE),
                                     escape = FALSE)
-    
-    # if(nrow(housing_sort)!=0){
-    #   action=apply(housing_sort,1,function(r){
-    #     addr=r["addr"]
-    #     lat=r["lat"]
-    #     lng=r["lng"]
-    #     paste0("<a class='go-map' href='' data-lat='",lat,"'data-lng='",lng,"'>",addr,'</a>')
-    #   }
-    #   )
-    #   housing_sort$addr=action
-    #   output$recom <- renderDataTable(housing_sort[,c(3:7,1)],
-    #                                   # options = list("sScrollX" = "100%", "bLengthChange" = FALSE),
-    #                                   escape = FALSE)
-    #   # output$recom <- renderDataTable(housing_sort[,c("addr","price","bedrooms","bathrooms")],escape=FALSE)
-    # }
-    # else{
-    #   # output$recom = renderDataTable(housing_sort[,c("addr","price","bedrooms","bathrooms")])
-    #   output$recom <- renderDataTable(housingFilter()[,c(3:7,1)]
-    #                                   # options = list("sScrollX" = "100%", "bLengthChange" = FALSE),
-    #                                   # escape = FALSE
-    #                                   )
-    # }
   })
 
   # When point in map is hovered, show a popup with housing info
@@ -304,59 +286,19 @@ shinyServer(function(input, output,session) {
     })
   })
 
-  # #############Search###############
-  # observeEvent(input$button1,{
-  #   url = paste0('http://maps.google.com/maps/api/geocode/xml?address=',input$location,'&sensor=false')
-  #   doc = xmlTreeParse(url)
-  #   root = xmlRoot(doc)
-  #   lati = as.numeric(xmlValue(root[['result']][['geometry']][['location']][['lat']]))
-  #   long = as.numeric(xmlValue(root[['result']][['geometry']][['location']][['lng']]))
-  # 
-  #   leafletProxy("map") %>%
-  #     setView(lng=long, lat=lati,zoom=15)%>%
-  #     addMarkers(lng=long,lat=lati,layerId = "1",icon=icons(
-  #       iconUrl = "../output/icons8-Location-50.png",iconWidth = 25, iconHeight = 25))
-  # })
-  
-  ## default layer ##
-  bedroom_filter=housing_all$bedrooms==2
-  bathroom_filter=housing_all$bathrooms==1
-  price_filter=housing_all$price>=1000 & housing_all$price<=5000
-    weights = c(0.5,0.3,0.2)
-    mat = t(as.matrix(all_score[,c("rest","travel","crime")]))
-    combined = rowSums(t(weights*mat))
-    zcomb = cbind(zip, combined) %>% data.frame()
-  filterh=bedroom_filter & bathroom_filter & price_filter
-  f_house = housing_all[filterh,]
-  filtered.house = data.frame(merge(f_house,zcomb, by.x="zipcode",by.y="zip", all.x = T))
-  ordered_house = filtered.house %>% arrange(desc(combined))
-  default_house = ordered_house[1:20,]
-  
-  #################Clear Choices############
-  observeEvent(input$button2,{
-    proxy<-leafletProxy("map")
-    proxy %>%
-      setView(lng = -73.971035, lat = 40.775659, zoom = 11) %>%
-      addMarkers(data=default_house,
-                 lng=~lng,
-                 lat=~lat,
-                 clusterOptions=markerClusterOptions(),
-                 group="housing_cluster")
-    updateTextInput(session, inputId="location", value = "")
-  }
-  )
-
-  ## Clear preference choices
-  observeEvent(input$no_rec2, {
-    updateSliderInput(session, "check2_pr",value = 5400)
-    updateSelectInput(session, "check2_ty",selected="")
-    updateSelectInput(session, "check2_re",selected="")
-    updateSelectInput(session, "check2_tr",selected = "Who Cares.")
-    updateSelectInput(session, "check2_cb",selected = "I'm allergic.")
-    updateSelectInput(session, "check2_ct",selected = "Netflix for life.")
-    updateSelectInput(session, "check2_ma",selected = "Just Amazon.")
-  })
-  
+  # ## default layer ##
+  # bedroom_filter=housing_all$bedrooms==2
+  # bathroom_filter=housing_all$bathrooms==1
+  # price_filter=housing_all$price>=1000 & housing_all$price<=5000
+  #   weights = c(0.5,0.3,0.2)
+  #   mat = t(as.matrix(all_score[,c("rest","travel","crime")]))
+  #   combined = rowSums(t(weights*mat))
+  #   zcomb = cbind(zip, combined) %>% data.frame()
+  # filterh=bedroom_filter & bathroom_filter & price_filter
+  # f_house = housing_all[filterh,]
+  # filtered.house = data.frame(merge(f_house,zcomb, by.x="zipcode",by.y="zip", all.x = T))
+  # ordered_house = filtered.house %>% arrange(desc(combined))
+  # default_house = ordered_house[1:20,]
   
   ## compare price by median ##
   housingComp=reactive({
@@ -378,12 +320,70 @@ shinyServer(function(input, output,session) {
     housingComp()
   })
   
+  ############Subway##############
+  observeEvent(input$Subway,{
+    p<-input$Subway
+    proxy<-leafletProxy("map")
+    
+    if(p==TRUE){
+      proxy %>% 
+        addMarkers(data=subway, ~lng, ~lat,label = ~Info,icon=icons(
+          iconUrl = "../output/icons8-Bus-48.png",
+          iconWidth = 7, iconHeight = 7),group="subway")
+    }
+    else proxy%>%clearGroup(group="subway")
+    
+  })
+  
+  ###############bus###############
+  observeEvent(input$Bus,{
+    p<-input$Bus
+    proxy<-leafletProxy("map")
+    
+    if(p==TRUE){
+      proxy %>% 
+        addMarkers(data=bus_stop, ~lng, ~lat,label = ~info,icon=icons(
+          iconUrl = "../output/icons8-Bus-48.png",
+          iconWidth = 7, iconHeight = 7),layerId=as.character(bus_stop$info))
+    }
+    else proxy%>%removeMarker(layerId=as.character(bus_stop$info))
+    
+  })
   
   
+  ##############Market#####################
+  observeEvent(input$Market,{
+    p<- input$Market
+    proxy<-leafletProxy("map")
+    if(p==TRUE){
+      proxy%>%
+        addMarkers(lat=markets$latitude, lng=markets$longitude,icon=icons(
+          iconUrl = "../output/icons8-Shopping Cart-48.png",
+          iconWidth = 7, iconHeight = 7, shadowWidth = 7, shadowHeight = 7),layerId=as.character(markets$License.Number))
+    }
+    else{
+      proxy %>%
+        removeMarker(layerId=as.character(markets$License.Number))
+    }
+  })
   
+  ##############Resturant#####################
+  observeEvent(input$Restaurant,{
+    p<- input$Restaurant
+    proxy<-leafletProxy("map")
+    if(p==TRUE){
+      proxy%>%
+        addMarkers(lat=restaurant$lat, lng=restaurant$lon,icon=icons(
+          iconUrl = "../output/icons8-French Fries-96.png",
+          iconWidth = 7, iconHeight = 7, shadowWidth = 7, shadowHeight = 7),layerId=as.character(restaurant$CAMIS))
+    }
+    else{
+      proxy %>%
+        removeMarker(layerId=as.character(restaurant$CAMIS))
+    }
+  })
   
-  
-  
+
   df.box <- reactive( {
     validate(
       need(input$group != "", "Please select a feature")
