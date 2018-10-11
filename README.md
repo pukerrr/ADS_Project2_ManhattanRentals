@@ -2,7 +2,7 @@
 
 ![image](doc/overview.png)
 
-## Rent As You Want
+## [Rent As You Want](https://ovo-ovo.shinyapps.io/RentManhattan/)
 Term: Fall 2018
 
 + Group 6 
