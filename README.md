@@ -35,7 +35,7 @@ On the Comparison page, users can choose whichever zip code they want, and see h
 		+ The Time Series Tab shows you the historical trend of median prices of selected zipcode areas.
 		+ Just for your reference, the Prediction Tab provides predicted median prices of selected zipcode areas in the next 12 months.
 
-+ **Contribution statement**: ([default](doc/a_note_on_contributions.md)) All team members contributed equally in all stages of this project. All team members approve our work presented in this GitHub repository including this contributions statement.
++ **Contribution statement**: 
 
 	+ Data Processing: Jiayi Cui, Ruoxi Bai, Zhirong Li
 	+ UI&Server Building: Ruoxi Bai, Zhirong Li(page 1), Kayla Smith(page 2)
