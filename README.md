@@ -16,6 +16,8 @@ Term: Fall 2018
 
 + **Project summary**: 
 
+Rental Apps generally care about the preference of the majority, while our App focuses on your priority preference.
+
 This app provides a platform for people to search house rental based on their most cared issues. We include safety, transportation, nightlife, price, entertainment, food and shopping. Users can pick 3 top prior features and we give recommendation according to the ranked priorities.
 
 On the 'All about Rental' Page, users can not only filter by house type and price range, but also choose 3 top preferences and their weights. The recommendation system will then show the top 20 most suitable houses. Also, the dot map shows where the house is and save the trouble of searching them on Google map. Moreover, when you click on the map, a hover will shows above it providing address, price, type, size, year built, appliance and an image of the house.
