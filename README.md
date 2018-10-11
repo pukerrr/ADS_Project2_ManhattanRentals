@@ -33,7 +33,7 @@ On the Comparison page, users can choose whichever zip code they want, and see h
 	+ Zipcode Comparison
 		+ You may select your concerned zipcodes (4 at most), features, cuisines, safety issues, and preferred travel, night life and recreation methods, and the Neighbourhood Features Tab shows you what position the zipcode area is in each features.
 		+ The Time Series Tab shows you the historical trend of median prices of selected zipcode areas.
-		+ Just for your reference, the Prediction Tan provides predicted median prices of selected zipcode areas in the next 12 months.
+		+ Just for your reference, the Prediction Tab provides predicted median prices of selected zipcode areas in the next 12 months.
 
 + **Contribution statement**: ([default](doc/a_note_on_contributions.md)) All team members contributed equally in all stages of this project. All team members approve our work presented in this GitHub repository including this contributions statement.
 
