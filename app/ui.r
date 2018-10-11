@@ -16,6 +16,45 @@ groups <- unique(df.boxplot$Group)
 shinyUI(
   fluidPage(
             navbarPage(theme="styles.css", p(class="h","Manhattan Rent"),id = "inTabset",
+                       #the home panel
+                       tabPanel("Home",icon = icon("home"),
+                                div(class = "home"  ,tags$head(
+                                  # Include our custom CSS
+                                  includeCSS("www/styles.css")),
+                                  br(),
+                                  br(),
+                                  br(),
+                                  br(),
+                                  br(),
+                                  br(),
+                                  br(),
+                                  br(),
+                                  br(),
+                                  br(),
+                                  br(),
+                                  br(),
+                                  br(),
+                                  br(),
+                                  br(),
+                                  br(),
+                                  h1("Rentals Discovery in Manhattan", style = "position:absolute;background: rgba(44, 62, 80, 0.5);padding:20px;color:white;font-family: sans-serif;font-size: 450%;left:100px"),
+                                  br(),
+                                  br(),
+                                  br(),
+                                  br(),
+                                  br(),
+                                  br(),
+                                  br(),
+                                  br(),
+                                  br(),
+                                  br(),
+                                  h1("ADS Fall 2018",br(),"Group 6",style = "position:absolute;color:white;font-family: sans-serif;font-size: 250%;left:100px;padding:20px;background: rgba(44, 62, 80, 0.5)")
+                                  
+                                )
+                                
+                       ),
+                       
+                       
                        tabPanel("All About Rental",fluidPage(
                          h2("Customize My Apartment", #span("My Apartment", style = "font-weight: 300"), 
                             style = "font-family: 'Arial';

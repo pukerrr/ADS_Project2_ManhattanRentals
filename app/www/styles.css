@@ -23,6 +23,19 @@
     right: 0;
     opacity: 0.25;
 }
+div.home {
+    position:fixed;
+background-image: url("NY.jpg");
+background-repeat: no-repeat;
+background-attachment: fixed;
+background-position: center;
+background-size:cover;
+top: 0;
+left: 0;
+bottom: 0;
+right: 0;
+opacity: 0.85;
+}
 
 /* Set font size of Welcome and Get On Board Pages*/
 #fz10{font-size: 1.0vw}
