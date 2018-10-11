@@ -42,7 +42,7 @@ On the 'Zipcode Comparison' page, users can choose whichever zip code they want,
 	+ CSS Design: Ruoxi Bai, Zhirong Li, Yukun Pei
 	+ Home Page Design: Yukun Pei
 	+ Time Series Prediction: Jiayi Cui, Kayla Smith
-	+ Feature Score Calculation: Ruoxi Bai
+	+ Apartment Recommendatiaon & Price Comparison: Ruoxi Bai
 
 
 Following [suggestions](http://nicercode.github.io/blog/2013-04-05-projects/) by [RICH FITZJOHN](http://nicercode.github.io/about/#Team) (@richfitz). This folder is orgarnized as follows.
