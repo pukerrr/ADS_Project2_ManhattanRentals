@@ -22,7 +22,7 @@ This app provides a platform for people to search house rental based on their mo
 
 On the 'All about Rental' Page, users can not only filter by house type and price range, but also choose 3 top preferences and their weights. The recommendation system will then show the top 20 most suitable houses. Also, the dot map shows where the house is and save the trouble of searching them on Google map. Moreover, when you click on the map, a hover will shows above it providing address, price, type, size, year built, appliance and an image of the house.
 
-On the Comparison page, users can choose whichever zip code they want, and see how good this area is in different features comparing other Manhattan regions. Our App also provides price trend plots which not only shows the historical price, but also the predicted price trend in the next 12 months. This page allows you to compare the housing among the whole Manhattan and the price over time at the same time.
+On the Comparison page, users can choose whichever zip code they want, and see how good this area is in different features comparing to other Manhattan regions. Our App also provides price trend plots which not only shows the historical price, but also the predicted price trend in the next 12 months. This page allows you to compare the housing among the whole Manhattan and the price over time at the same time.
 
 + How to use the App
 	+ All about Rental
