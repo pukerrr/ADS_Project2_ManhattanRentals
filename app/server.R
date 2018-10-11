@@ -357,6 +357,33 @@ shinyServer(function(input, output,session) {
     updateSelectInput(session, "check2_ma",selected = "Just Amazon.")
   })
   
+  
+  ## compare price by median ##
+  housingComp=reactive({
+    compareHouse = housing_all %>%
+      filter(bedrooms == input$bednum & bathrooms == input$bathnum & zipcode == input$zipnum)
+    if(nrow(compareHouse) == 0){compareText = "Sorry, we don't have similar apartments in our database"}
+    else{
+      compMed = median(compareHouse$price)
+      if(compMed < input$pricenum){compareText = paste("The price is higher than half of the",input$bednum,"b",
+                                                       input$bathnum,"b","apartments in the neighborhood")
+      } else {
+        compareText = paste("The price is lower than half of the",input$bednum,"b",
+                            input$bathnum,"b","apartments in the neighborhood")
+      }
+    }
+    return(compareText)
+  })
+  output$comp1Text <- renderText({ 
+    housingComp()
+  })
+  
+  
+  
+  
+  
+  
+  
   df.box <- reactive( {
     validate(
       need(input$group != "", "Please select a feature")
