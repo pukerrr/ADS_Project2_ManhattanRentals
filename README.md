@@ -38,10 +38,10 @@ On the 'Zipcode Comparison' page, users can choose whichever zip code they want,
 + **Contribution statement**: 
 
 	+ Project management: Ruoxi Bai
-	+ Data Processing: Jiayi Cui, Ruoxi Bai, Zhirong Li
+	+ Data Processing: Jiayi Cui, Ruoxi Bai, Zhirong Li, Yukun Pei
 	+ UI&Server Building: Ruoxi Bai, Zhirong Li(page 1), Kayla Smith(page 2)
 	+ CSS Design: Ruoxi Bai, Zhirong Li, Yukun Pei
-	+ Home Page Design: Yukun Pei
+	+ Home Page Design & app deployment: Yukun Pei
 	+ Time Series Prediction: Jiayi Cui, Kayla Smith
 	+ Apartment Recommendatiaon & Price Comparison: Ruoxi Bai
 
