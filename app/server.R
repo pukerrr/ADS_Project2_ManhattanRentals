@@ -87,7 +87,7 @@ shinyServer(function(input, output,session) {
       addMarkers(data=housingFilter(),
                  lng=~lng,
                  lat=~lat,
-                 #clusterOptions=markerClusterOptions(),
+                 clusterOptions=markerClusterOptions(),
                  group="housing_cluster"
       )
   })
@@ -290,6 +290,20 @@ shinyServer(function(input, output,session) {
   # filtered.house = data.frame(merge(f_house,zcomb, by.x="zipcode",by.y="zip", all.x = T))
   # ordered_house = filtered.house %>% arrange(desc(combined))
   # default_house = ordered_house[1:20,]
+  
+  ###### Clear Choices ######
+  observeEvent(input$button2,{
+    proxy<-leafletProxy("map")
+    proxy %>%
+      setView(lng = -73.971035, lat = 40.775659, zoom = 11.5) %>%
+      removeMarker(layerId="1") %>%
+      addMarkers(data=housing,
+                 lng=~lng,
+                 lat=~lat,
+                 clusterOptions=markerClusterOptions(),
+                 group="housing_cluster")
+    updateTextInput(session, inputId="location", value = "")
+  })
   
   ##### compare price by median ######
   housingComp=reactive({
