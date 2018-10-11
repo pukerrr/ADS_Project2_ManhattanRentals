@@ -32,6 +32,7 @@ load("./output/markets.RData")
 load("./output/restaurant.RData")
 load("./output/subway.RData")
 load("./output/bus_stop.RData")
+load("./output/nyc.RData")
 
 housing_all$price = as.numeric(gsub(",","",housing_all$price))
   
@@ -389,6 +390,26 @@ shinyServer(function(input, output,session) {
   #   }
   # })
   
+  ###### Crime ######
+  color <- list(color1 = c('#F2D7D5','#D98880', '#CD6155', '#C0392B', '#922B21','#641E16'),
+                color2 = c('#e6f5ff','#abdcff', '#70c4ff', '#0087e6', '#005998','#00365d','#1B4F72'),
+                color3 = c("#F7FCF5","#74C476", "#005A32"))
+  bin <- list(bin1 = c(0,500,1000,1500,2000,2500,3000), bin2 = c(0,1,2,3,4,5,6,7))
+  pal <- colorBin(color[[1]], bins = bin[[1]])
+  
+  observeEvent(input$Crime,{
+    p<- input$Crime
+    proxy<-leafletProxy("map")
+    if(p==TRUE){
+      proxy %>%
+        addPolygons(data=nyc, fillColor = ~pal(count), color = 'grey', weight = 1,
+                    fillOpacity = .6)%>%
+        addLegend(pal = pal, values = nyc$count,position="bottomleft")
+    }
+    else proxy%>%clearShapes()%>%clearControls()
+    
+  })
+  
   
   ############################
   ## Page 2: recommendation ##
@@ -447,7 +468,7 @@ shinyServer(function(input, output,session) {
     ggplot() +
       geom_boxplot(data=df.box(), aes(x=Category, y=Count, fill=Category),
                    lwd = 1, color="black", fill="lavenderblush2") +
-      geom_point(data=df.point(), aes(x=Category, y=Count, color=factor(Zipcode)), size=3) +
+      geom_point(data=df.point(), aes(x=Category, y=Count, color=factor(Zipcode)), size=4, shape = 18) +
       facet_wrap(~Group, scales="free") +
       ggtitle( "Neighborhood Features" ) +
       theme(axis.text.x = element_text(angle = 45, hjust = 1)) +

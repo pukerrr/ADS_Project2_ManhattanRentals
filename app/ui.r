@@ -167,7 +167,8 @@ shinyUI(
                                               bottom = "auto",
                                               width = 125, height = 215,
                                               checkboxInput("Bus", label = "Bus",value= FALSE),
-                                              checkboxInput("Subway",label="Subway",value = FALSE)#,
+                                              checkboxInput("Subway",label="Subway",value = FALSE),
+                                              checkboxInput("Crime", label = "Crime",value= FALSE)
                                               #checkboxInput("Market", label = "Market",value = FALSE),
                                               #checkboxInput("Restaurant", label = "Restaurant",value= FALSE)                               
                                               
