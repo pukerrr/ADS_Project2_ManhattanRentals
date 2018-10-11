@@ -1,0 +1,6 @@
+median_price <- read.csv('./output/median_price_manhattan.csv')
+save(median_price, file='./output/median_price.RData')
+load('./output/median_price.RData')
+df.boxplot <- read.csv("./output/boxplot_data.csv")
+save(df.boxplot, file='./output/df_boxplot.RData')
+load('./output/df_boxplot.RData')

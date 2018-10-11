@@ -19,48 +19,50 @@ library(XML)
 library(tidyr)
 library(scales)
 
-source("../lib/showPopupHover.R")
-source("../lib/ZillowApi.R")
-source("../lib/timeSeries.R")
+source("./lib/showPopupHover.R")
+source("./lib/ZillowApi.R")
+source("./lib/timeSeries.R")
 
-median_price <- read.csv('../output/median_price_manhattan.csv')
-df.boxplot <- read.csv("../output/boxplot_data.csv")
-load("../output/housing_all.RData") 
-load("../output/markets.RData")
-load("../output/restaurant.RData")
-load("../output/subway.RData")
-load("../output/bus_stop.RData")
+# median_price <- read.csv('./output/median_price_manhattan.csv')
+# df.boxplot <- read.csv("./output/boxplot_data.csv")
+load('./output/median_price.RData')
+load('./output/df_boxplot.RData')
+load("./output/housing_all.RData") 
+load("./output/markets.RData")
+load("./output/restaurant.RData")
+load("./output/subway.RData")
+load("./output/bus_stop.RData")
 
 housing_all$price = as.numeric(gsub(",","",housing_all$price))
   
 # features
-load("../output/restaurant_overall.Rdata")
+load("./output/restaurant_overall.Rdata")
 rest_rawscore = (restaurant_overall$american.prob+restaurant_overall$chinese.prob+restaurant_overall$italian.prob+
   restaurant_overall$japanese.prob+restaurant_overall$pizza.prob)/(restaurant_overall$violation.prob)
 rest_score = punif(rest_rawscore, 0, max(rest_rawscore))
 
-load("../output/travel.Rdata") 
+load("./output/travel.Rdata") 
 travel_score = punif(travel$bus.prob+travel$subway.prob, 0, max(travel$bus.prob+travel$subway.prob))
 
-load("../output/party.RData")
+load("./output/party.RData")
 party_score = punif(party$bar.prob+party$club.prob, 0, max(party$bar.prob+party$club.prob))
 
-load("../output/entertainment.RData") 
+load("./output/entertainment.RData") 
 entertainment_score = punif(entertainment$gallery.prob+entertainment$theatre.prob, 0, max(entertainment$gallery.prob+entertainment$theatre.prob))
 
-load("../output/count_hospital.Rdata")
+load("./output/count_hospital.Rdata")
 hospital_score = count.hospital$PROB
 
-load("../output/count_market.Rdata")
+load("./output/count_market.Rdata")
 market_score = count.market$PROB
 
-load("../output/count_crime.Rdata")
+load("./output/count_crime.Rdata")
 crime_score = 1 - count.crime$PROB
 
-load("../output/count_park.Rdata")
+load("./output/count_park.Rdata")
 park_score = count.park$PROB
 
-load("../output/count_complaint.Rdata")
+load("./output/count_complaint.Rdata")
 complaint_score = 1 - count.complaint$PROB
 
 zip = as.numeric(count.complaint[,1])
@@ -333,7 +335,7 @@ shinyServer(function(input, output,session) {
     if(p==TRUE){
       proxy %>% 
         addMarkers(data=subway, ~lng, ~lat,label = ~Info,icon=icons(
-          iconUrl = "../output/icons8-Bus-48.png",
+          iconUrl = "./output/icons8-Bus-48.png",
           iconWidth = 7, iconHeight = 7),group="subway")
     }
     else proxy%>%clearGroup(group="subway")
@@ -348,44 +350,44 @@ shinyServer(function(input, output,session) {
     if(p==TRUE){
       proxy %>% 
         addMarkers(data=bus_stop, ~lng, ~lat,label = ~info,icon=icons(
-          iconUrl = "../output/icons8-Bus-48.png",
+          iconUrl = "./output/icons8-Bus-48.png",
           iconWidth = 7, iconHeight = 7),layerId=as.character(bus_stop$info))
     }
     else proxy%>%removeMarker(layerId=as.character(bus_stop$info))
     
   })
   
-  ###### Market ######
-  observeEvent(input$Market,{
-    p<- input$Market
-    proxy<-leafletProxy("map")
-    if(p==TRUE){
-      proxy%>%
-        addMarkers(lat=markets$latitude, lng=markets$longitude,icon=icons(
-          iconUrl = "../output/icons8-Shopping Cart-48.png",
-          iconWidth = 7, iconHeight = 7, shadowWidth = 7, shadowHeight = 7),layerId=as.character(markets$License.Number))
-    }
-    else{
-      proxy %>%
-        removeMarker(layerId=as.character(markets$License.Number))
-    }
-  })
+  # ###### Market ######
+  # observeEvent(input$Market,{
+  #   p<- input$Market
+  #   proxy<-leafletProxy("map")
+  #   if(p==TRUE){
+  #     proxy%>%
+  #       addMarkers(lat=markets$latitude, lng=markets$longitude,icon=icons(
+  #         iconUrl = "./output/icons8-Shopping Cart-48.png",
+  #         iconWidth = 7, iconHeight = 7, shadowWidth = 7, shadowHeight = 7),layerId=as.character(markets$License.Number))
+  #   }
+  #   else{
+  #     proxy %>%
+  #       removeMarker(layerId=as.character(markets$License.Number))
+  #   }
+  # })
   
-  ###### Restaurant ######
-  observeEvent(input$Restaurant,{
-    p<- input$Restaurant
-    proxy<-leafletProxy("map")
-    if(p==TRUE){
-      proxy%>%
-        addMarkers(lat=restaurant$lat, lng=restaurant$lon,icon=icons(
-          iconUrl = "../output/icons8-French Fries-96.png",
-          iconWidth = 7, iconHeight = 7, shadowWidth = 7, shadowHeight = 7),layerId=as.character(restaurant$CAMIS))
-    }
-    else{
-      proxy %>%
-        removeMarker(layerId=as.character(restaurant$CAMIS))
-    }
-  })
+  # ###### Restaurant ######
+  # observeEvent(input$Restaurant,{
+  #   p<- input$Restaurant
+  #   proxy<-leafletProxy("map")
+  #   if(p==TRUE){
+  #     proxy%>%
+  #       addMarkers(lat=restaurant$lat, lng=restaurant$lon,icon=icons(
+  #         iconUrl = "./output/icons8-French Fries-96.png",
+  #         iconWidth = 7, iconHeight = 7, shadowWidth = 7, shadowHeight = 7),layerId=as.character(restaurant$CAMIS))
+  #   }
+  #   else{
+  #     proxy %>%
+  #       removeMarker(layerId=as.character(restaurant$CAMIS))
+  #   }
+  # })
   
   
   ############################

@@ -10,7 +10,8 @@ library(shinythemes)
 library(shinyWidgets)
 library(htmltools)
 
-df.boxplot <- read.csv("../output/boxplot_data.csv")
+# df.boxplot <- read.csv("./output/boxplot_data.csv")
+load('./output/df_boxplot.RData')
 groups <- unique(df.boxplot$Group)
 
 shinyUI(
@@ -166,9 +167,9 @@ shinyUI(
                                               bottom = "auto",
                                               width = 125, height = 215,
                                               checkboxInput("Bus", label = "Bus",value= FALSE),
-                                              checkboxInput("Subway",label="Subway",value = FALSE),
-                                              checkboxInput("Market", label = "Market",value = FALSE),
-                                              checkboxInput("Restaurant", label = "Restaurant",value= FALSE)                               
+                                              checkboxInput("Subway",label="Subway",value = FALSE)#,
+                                              #checkboxInput("Market", label = "Market",value = FALSE),
+                                              #checkboxInput("Restaurant", label = "Restaurant",value= FALSE)                               
                                               
                                 )
                          )

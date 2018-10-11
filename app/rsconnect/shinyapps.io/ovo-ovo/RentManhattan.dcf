@@ -1,0 +1,13 @@
+name: RentManhattan
+title: RentManhattan
+username:
+account: ovo-ovo
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 506932
+bundleId: 1636967
+url: https://ovo-ovo.shinyapps.io/RentManhattan/
+when: 1539265325.97448
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: README.md|server_given.R|ui_given.r|Untitled.R
