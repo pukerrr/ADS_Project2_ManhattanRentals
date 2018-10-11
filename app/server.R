@@ -77,7 +77,7 @@ shinyServer(function(input, output,session) {
   ## Page 1: recommendation ##
   ############################
   
-  #############Map#############
+  ###### Map ######
   
   output$map <- renderLeaflet({
     leaflet() %>%
@@ -92,16 +92,13 @@ shinyServer(function(input, output,session) {
       )
   })
 
-  # filter housing data:
+  ###### Filter, Recommend ######
   housingFilter=reactive({
-    # filter on house info
-    # price1 = input$slider2[1]
-    # price2 = input$slider2[2]
+    # filter
     bedroom_filter=housing_all$bedrooms==input$min_bedrooms 
     bathroom_filter=housing_all$bathrooms==input$min_bathrooms
     price_filter=housing_all$price>=as.numeric(input$min_price) & housing_all$price<=as.numeric(input$max_price)
-    # price_filter=housing_all$price>=as.numeric(input$slider2[1]) & housing_all$price<=as.numeric(input$slider2[2])
-    
+
     # preference of the neighborhood
     
     if(input$select_all){
@@ -126,7 +123,7 @@ shinyServer(function(input, output,session) {
   })
   
   
-  # show data in the map:
+  ###### show data in the map ######
   observe({leafletProxy("map")%>%clearGroup("housing_cluster")%>%
       addMarkers(data=housingFilter(),
                  lng=~lng,
@@ -136,8 +133,7 @@ shinyServer(function(input, output,session) {
       )
   })
   
-  # show current status of icons:
-
+  ###### cloud and detail view ######
   showStatus=reactive({
     if (is.null(input$map_bounds)){
       return("cloud")
@@ -163,9 +159,7 @@ shinyServer(function(input, output,session) {
 
     }
   })
-
   # show housing details when zoom to one specific level
-
   observe({
     if(showStatus()=="details"){
       if(nrow(marksInBounds())!=0){
@@ -222,14 +216,12 @@ shinyServer(function(input, output,session) {
     }
     )
     housing_sort$addr=action
-    output$recom <- renderDataTable(housing_sort[,c(3:7,1)],
-                                    # options = list("sScrollX" = "100%", "bLengthChange" = FALSE),
+    output$recom <- renderDataTable(housingFilter()[,c(3:7,1)],options = list(pageLength = 10,"sScrollX" = "100%", "bLengthChange" = FALSE),
                                     escape = FALSE)
   })
 
   # When point in map is hovered, show a popup with housing info
   observe({
-
     event <- input$map_marker_mouseover
     if (is.null(event))
       return()
@@ -265,6 +257,7 @@ shinyServer(function(input, output,session) {
       map %>% setView(lng = lng, lat = lat, zoom = 16)
     })
   })
+  
   # hover the list to show info
   observe({
     if (is.null(input$showPop))
@@ -281,8 +274,6 @@ shinyServer(function(input, output,session) {
       else{
         map %>% clearPopups()
       }
-
-
     })
   })
 
@@ -300,7 +291,7 @@ shinyServer(function(input, output,session) {
   # ordered_house = filtered.house %>% arrange(desc(combined))
   # default_house = ordered_house[1:20,]
   
-  ## compare price by median ##
+  ##### compare price by median ######
   housingComp=reactive({
     compareHouse = housing_all %>%
       filter(bedrooms == input$bednum & bathrooms == input$bathnum & zipcode == input$zipnum)
@@ -320,7 +311,7 @@ shinyServer(function(input, output,session) {
     housingComp()
   })
   
-  ############Subway##############
+  ###### Subway ######
   observeEvent(input$Subway,{
     p<-input$Subway
     proxy<-leafletProxy("map")
@@ -335,7 +326,7 @@ shinyServer(function(input, output,session) {
     
   })
   
-  ###############bus###############
+  ###### Bus ######
   observeEvent(input$Bus,{
     p<-input$Bus
     proxy<-leafletProxy("map")
@@ -350,8 +341,7 @@ shinyServer(function(input, output,session) {
     
   })
   
-  
-  ##############Market#####################
+  ###### Market ######
   observeEvent(input$Market,{
     p<- input$Market
     proxy<-leafletProxy("map")
@@ -367,7 +357,7 @@ shinyServer(function(input, output,session) {
     }
   })
   
-  ##############Resturant#####################
+  ###### Restaurant ######
   observeEvent(input$Restaurant,{
     p<- input$Restaurant
     proxy<-leafletProxy("map")
@@ -383,7 +373,11 @@ shinyServer(function(input, output,session) {
     }
   })
   
-
+  
+  ############################
+  ## Page 2: recommendation ##
+  ############################
+  
   df.box <- reactive( {
     validate(
       need(input$group != "", "Please select a feature")
